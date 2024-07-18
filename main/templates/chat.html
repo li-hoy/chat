@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue school</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+</head>
+<body>
+    <header>
+        <div id="me"></div>
+        <div id="auth">
+            {{ title }}
+        </div>
+    </header>
+    <main>
+        <div id="chat"></div>
+        <div id="contacts"></div>
+    </main>
+    <footer>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <script>
+        const shared_data = {
+            me : {
+                id: 0,
+                name: 'Николай',
+            },
+            current_interlocutor_id: null,
+            message_feed: [
+            ],
+            chats: {
+                1: [
+                    {
+                        author_id: 0,
+                        interlocutor_id: 1,
+                        content: 'my message 1',
+                    },
+                    {
+                        author_id: 1,
+                        interlocutor_id: 0,
+                        content: 'his message 1',
+                    },
+                ],
+                2: [
+                    {
+                        author_id: 0,
+                        interlocutor_id: 2,
+                        content: 'my message 2',
+                    },
+                    {
+                        author_id: 2,
+                        interlocutor_id: 0,
+                        content: 'his message 2',
+                    },
+                ],
+                },
+            contacts: [
+                {
+                    id: 1,
+                    name: 'Вася',
+                },
+                {
+                    id: 2,
+                    name: 'Петя',
+                },
+            ],
+        };
+
+        const chat = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#chat',
+            data: {
+                message: '',
+                shared: shared_data,
+            },
+            methods: {
+                send: function ($event) {
+                    const input = $event.target
+                        .parentElement
+                        .querySelector('input');
+
+                        shared_data.message_feed.push({
+                            author_id: this.shared.me.id,
+                            interlocutor_id: this.shared.current_interlocutor_id,
+                            content: input.value
+                        });
+
+                        this.message = '';
+                },
+            },
+            computed: {
+                isSendButtonDisabled: function() {
+                    return (this.message === '');
+                }
+            },
+            template: `
+                <div id="chat">
+                    <div id="message-feed">
+                        <div
+                            v-bind:class="[
+                                'message',
+                                {
+                                    'message-self': (message.author_id === shared.me.id),
+                                }
+                            ]"
+                            v-for="message in shared.message_feed"
+                        >
+                            [[message.content]]
+                        </div>
+                    </div>
+                    <div id="message-panel" class="panel input-panel">
+                        <div class="input-wrapper">
+                            <input
+                                type="text"
+                                v-model="message"
+                                @keyup.enter="send($event)"
+                                value=""
+                                placeholder="введите сообщение"
+                            />
+                        </div>
+                        <button @click="send($event)" :disabled="isSendButtonDisabled">send</button>
+                    </div>
+                </div>
+            `
+        });
+
+        const contacts = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#contacts',
+            data: {
+                shared: shared_data,
+                search: ''
+            },
+            methods: {
+                select: function ($event) {
+                    this.shared.current_interlocutor_id = parseInt($event.target.getAttribute('data-contact-id'));
+
+                    this.shared.message_feed = this.shared.chats[this.shared.current_interlocutor_id];
+                },
+            },
+            template: `
+                <div id="contacts" class="panel">
+                    <div id="search-contact-panel" class="input-panel">
+                        <div class="input-wrapper">
+                            <input type="text" v-model="search" placeholder="поиск по контактам" />
+                        </div>
+                        <button>find</button>
+                    </div>
+                    <div id="contact-list">
+                        <div
+                            v-bind:class="[
+                                'contact',
+                                {
+                                    'contact-selected': (contact.id === shared.current_interlocutor_id),
+                                }
+                            ]"
+                            v-for="contact in shared.contacts"
+                            @click="select($event)"
+                            :data-contact-id="contact.id"
+                            :data-current-interlocutor-id="shared.current_interlocutor_id"
+                        >
+                            [[contact.name]]
+                        </div>
+                    </div>
+                </div>
+            `
+        });
+
+    </script>
+    
+</body>
+</html>

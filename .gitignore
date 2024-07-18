@@ -1,0 +1,3 @@
+main/static/css/*
+*.sqlite3
+*.code-workspace
