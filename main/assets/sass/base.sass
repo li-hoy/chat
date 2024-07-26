@@ -74,19 +74,21 @@ main
                 width: calc($search_panel_height * 3 - $border_width * 2)
         .contact
             display: flex
-            background-color: $color_super_light
-            border: $border_width solid $color_light
+            background-color: $color_dark
+            // border: $border_width solid $color_dark
             border-radius: $border_radius
             padding: $padding
             min-width: 5rem
             width: auto
             font-weight: bold
-            color: $color_super_dark
+            color: $color_lighter
             padding-left: $padding * 2
+            cursor: pointer
         .contact-selected
-            // background-color: $color_light
-            border-color: $color_super_dark
-            padding-left: $padding
+            color: $color_super_light
+            background-color: $color_darker
+            // border-color: $color_dark
+            // padding-left: $padding
         .contact + .contact
             margin-top: $padding
 

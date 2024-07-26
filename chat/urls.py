@@ -20,7 +20,7 @@ from django.urls import path
 from main import views
 
 urlpatterns = [
+    path('', views.chat),
+    path('exp/', views.experiments),
     path('admin/', admin.site.urls),
-    path('', views.root),
-    path('chat/', views.chat),
 ]
