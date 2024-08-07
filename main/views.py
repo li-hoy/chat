@@ -1,10 +1,13 @@
 from django.shortcuts import render
+from main.models import Message
 from main.models import Person
 from django.http import JsonResponse
+from django.utils import timezone
 
 def experiments(request):
     try:
         p = Person.objects.get(id = 2)
+
         name = p.name
     except:
         name = '-'
@@ -12,6 +15,7 @@ def experiments(request):
     context = {
         "content": name,
     }
+
     return render(request, 'title.html', context)
 
 def chat(request):
@@ -36,3 +40,13 @@ def messages(request):
             },
         ]
     })
+
+def add(request):
+    message = Message(
+        sender_id = request.sender_id,
+        recipient_id = request.recipient_id,
+        message = request.message,
+        date = timezone.now()
+    )
+
+    message.save()

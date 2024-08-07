@@ -5,6 +5,7 @@ class Person(models.Model):
     pass_hash = models.CharField(max_length=255, null=True)
 
 class Message(models.Model):
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    sender = models.ForeignKey(Person, related_name='senders', default=0, on_delete=models.CASCADE)
+    recipient = models.ForeignKey(Person, related_name='recipients', default=0, on_delete=models.CASCADE)
     message = models.TextField()
     date = models.DateTimeField()
