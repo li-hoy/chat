@@ -3,6 +3,7 @@ from main.models import Message
 from main.models import Person
 from django.http import JsonResponse
 from django.utils import timezone
+from django.core import serializers
 
 def experiments(request):
     try:
@@ -24,6 +25,14 @@ def chat(request):
     }
 
     return render(request, 'chat.html', context)
+
+def contacts(request):
+    return JsonResponse({
+       'contacts': list(map(lambda p: {
+            'id': p.id,
+            'name': p.name,
+        }, Person.objects.all()))
+    })
 
 def messages(request):
     return JsonResponse({

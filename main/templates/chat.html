@@ -58,16 +58,7 @@
                     },
                 ],
             },
-            contacts: [
-                {
-                    id: 1,
-                    name: 'Вася',
-                },
-                {
-                    id: 2,
-                    name: 'Петя',
-                },
-            ],
+            contacts: [],
         };
 
         const chat = new Vue({
@@ -82,17 +73,17 @@
             },
             methods: {
                 load: async function () {
-                    let response = await fetch('/messages');
+                    let response = await fetch('/contacts');
 
                     if (response.ok) {
-                        let json = await response.json();
+                        shared_data.contacts = (await response.json()).contacts;
 
-                        console.log(json);
+                        console.log(shared_data.contacts);
                     } else {
                         console.log("Ошибка HTTP: " + response.status);
                     }
 
-                    {% comment %} axios.get('/messages')
+                    {% comment %} axios.get('/contacts')
                         .then((response) => console.log(response))
                         .catch((error) => console.log(error)); {% endcomment %}
                 },
