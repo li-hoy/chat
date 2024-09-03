@@ -1,0 +1,144 @@
+$header_height: 100px
+$footer_height: 20px
+$input_panel_height: 3em
+$search_panel_height: $input_panel_height
+$border_width: 1px
+$padding: .5rem
+$color_super_dark: #404040
+$color_darker: #aaa
+$color_dark: #bbb
+$color_middle: #ccc
+$color_light: #ddd
+$color_light_middle: #e0e0e0
+$color_lighter: #eee
+$color_super_light: #f7f7f7
+$border_radius: 5px
+
+root
+    font-size: 14px
+
+header, main, footer
+    background-color: $color_darker
+    border: solid $border_width black
+
+body
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+    min-height: 100vh
+    min-width: 720px
+    
+header
+    height: $header_height
+
+main
+    height: calc(100vh - $header_height - $footer_height)
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    #chat
+        display: flex
+        flex-direction: column
+        flex-grow: 6
+        #message-feed
+            display: flex
+            flex-direction: column
+            justify-content: flex-end
+            flex-grow: 1
+            padding: $padding
+            background-color: $color_lighter
+            .message
+                background-color: $color_light_middle
+                border: $border_width solid $color_light
+                border-radius: $border_radius
+                padding: $padding
+                min-width: 5rem
+                width: fit-content
+            * + .message
+                margin-top: $padding
+            .message-self
+                background-color: $color_light
+                border-color: $color_dark
+                align-self: flex-end
+        #message-panel
+            display: flex
+            justify-content: space-between
+            height: $input_panel_height
+            input
+                text-align: right
+    #contacts
+        flex-grow: 1
+        #search-contact-panel
+            button
+                display: none
+                width: calc($search_panel_height * 3 - $border_width * 2)
+        .contact
+            display: flex
+            background-color: $color_dark
+            // border: $border_width solid $color_dark
+            border-radius: $border_radius
+            padding: $padding
+            min-width: 5rem
+            width: auto
+            font-weight: bold
+            color: $color_lighter
+            padding-left: $padding * 2
+            cursor: pointer
+        .contact-selected
+            color: $color_super_light
+            background-color: $color_darker
+            // border-color: $color_dark
+            // padding-left: $padding
+        .contact + .contact
+            margin-top: $padding
+
+footer
+    height: $footer_height
+
+button
+    color: $color_lighter
+    font-weight: bold
+    border: none
+    border-radius: .5em
+    background-color: $color_darker
+    padding: .75em 1.25em
+    margin-left: 2 * $border_radius
+
+button:hover
+    background-color: $color_dark
+    cursor: pointer
+
+button:active
+   background-color: $color_middle
+
+button:disabled, button[disabled]
+   background-color: $color_light_middle
+
+.panel
+    background-color: lightgray
+    padding: 0 $padding
+
+.input-panel
+    display: flex
+    justify-content: space-between
+    align-items: center
+    height: $search_panel_height
+    *
+        border-width: 0
+        height: calc(100% - 2 * $padding)
+    .input-wrapper
+        display: flex
+        flex: 1
+        justify-content: start
+        align-items: center
+        background-color: white
+        padding: 0 10px
+        border-radius: $border_radius
+        input
+            border: none
+            outline: none
+            width: 100%
+            height: calc(100% - 2 * $border_radius)
+
+#message-panel
+    background-color: $color_light
