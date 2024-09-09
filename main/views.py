@@ -27,28 +27,52 @@ def chat(request):
     return render(request, 'chat.html', context)
 
 def contacts(request):
-    return JsonResponse({
+    response = JsonResponse({
        'contacts': list(map(lambda p: {
             'id': p.id,
             'name': p.name,
         }, Person.objects.all()))
     })
+    
+    response.set_cookie('my_id', 1)
 
-def messages(request):
+    return response
+
+def messages(request, interlocutor_id):
+    my_id = int(request.COOKIES.get('my_id'))
+
+    filtered_messages = []
+
+    messages = [
+        {
+            'author_id': 1,
+            'interlocutor_id': 1,
+            'content': 'my message 1',
+        },
+        {
+            'author_id': 1,
+            'interlocutor_id': 2,
+            'content': 'his message 3',
+        },
+        {
+            'author_id': 1,
+            'interlocutor_id': 1,
+            'content': 'my message 2',
+        },
+        {
+            'author_id': 1,
+            'interlocutor_id': 2,
+            'content': 'his message 4',
+        },
+    ]
+
+    for message in messages:
+        if message['author_id'] == my_id and interlocutor_id == message['interlocutor_id']:
+            filtered_messages.append(message)
+
     return JsonResponse({
-        'messages': [
-            {
-                'author_id': 0,
-                'interlocutor_id': 1,
-                'content': 'my message 1',
-            },
-            {
-                'author_id': 1,
-                'interlocutor_id': 0,
-                'content': 'his message 1',
-            },
-        ]
-    })
+        'messages': filtered_messages,
+    });
 
 def add(request):
     message = Message(

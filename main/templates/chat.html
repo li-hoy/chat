@@ -30,34 +30,8 @@
                 name: 'Николай',
             },
             current_interlocutor_id: null,
-            message_feed: [
-            ],
-            chats: {
-                1: [
-                    {
-                        author_id: 0,
-                        interlocutor_id: 1,
-                        content: 'my message 1',
-                    },
-                    {
-                        author_id: 1,
-                        interlocutor_id: 0,
-                        content: 'his message 1',
-                    },
-                ],
-                2: [
-                    {
-                        author_id: 0,
-                        interlocutor_id: 2,
-                        content: 'my message 2',
-                    },
-                    {
-                        author_id: 2,
-                        interlocutor_id: 0,
-                        content: 'his message 2',
-                    },
-                ],
-            },
+            message_feed: [],
+            chats: {},
             contacts: [],
         };
 
@@ -77,10 +51,8 @@
 
                     if (response.ok) {
                         shared_data.contacts = (await response.json()).contacts;
-
-                        console.log(shared_data.contacts);
                     } else {
-                        console.log("Ошибка HTTP: " + response.status);
+                        console.error("Ошибка HTTP: " + response.status);
                     }
 
                     {% comment %} axios.get('/contacts')
@@ -148,8 +120,16 @@
                 search_text: null,
             },
             methods: {
-                select: function ($event) {
+                select: async function ($event) {
                     this.shared.current_interlocutor_id = parseInt($event.target.getAttribute('data-contact-id'));
+
+                    let response = await fetch('/messages/' + this.shared.current_interlocutor_id + '/');
+
+                    if (response.ok) {
+                        this.shared.chats[this.shared.current_interlocutor_id] = (await response.json()).messages;
+                    } else {
+                        console.error("Ошибка HTTP: " + response.status);
+                    }
 
                     this.shared.message_feed = this.shared.chats[this.shared.current_interlocutor_id];
                 },
