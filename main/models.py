@@ -7,5 +7,5 @@ class Person(models.Model):
 class Message(models.Model):
     sender = models.ForeignKey(Person, related_name='senders', default=0, on_delete=models.CASCADE)
     recipient = models.ForeignKey(Person, related_name='recipients', default=0, on_delete=models.CASCADE)
-    message = models.TextField()
+    text = models.TextField()
     date = models.DateTimeField()

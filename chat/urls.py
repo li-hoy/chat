@@ -21,8 +21,13 @@ from main import views
 
 urlpatterns = [
     path('', views.chat),
+
     path('contacts/', views.contacts),
+
     path('messages/<int:interlocutor_id>/', views.messages),
+    path('messages/add/', views.add),
+    
     path('exp/', views.experiments),
+
     path('admin/', admin.site.urls),
 ]
