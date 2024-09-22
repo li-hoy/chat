@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.utils import timezone
 from django.core import serializers
 import json
+from django.db.models import Q
 
 def experiments(request):
     try:
@@ -34,56 +35,32 @@ def chat(request):
 
     return response
 
-
 def contacts(request):
     my_id = int(request.COOKIES.get('my_id'))
 
     persons = Person.objects.exclude(id=my_id)
 
-    response = JsonResponse({
+    return JsonResponse({
        'contacts': list(map(lambda p: {
             'id': p.id,
             'name': p.name,
-        }, persons)) #exclude(my_id).values()
+        }, persons))
     })
-
-    return response
 
 def messages(request, interlocutor_id):
     my_id = int(request.COOKIES.get('my_id'))
 
-    filtered_messages = []
-
-    messages = [
-        {
-            'author_id': 1,
-            'interlocutor_id': 1,
-            'content': 'my message 1',
-        },
-        {
-            'author_id': 1,
-            'interlocutor_id': 2,
-            'content': 'his message 3',
-        },
-        {
-            'author_id': 1,
-            'interlocutor_id': 1,
-            'content': 'my message 2',
-        },
-        {
-            'author_id': 1,
-            'interlocutor_id': 2,
-            'content': 'his message 4',
-        },
-    ]
-
-    for message in messages:
-        if message['author_id'] == my_id and interlocutor_id == message['interlocutor_id']:
-            filtered_messages.append(message)
+    messages = Message.objects.filter(Q(sender=my_id) | Q(recipient=my_id))
 
     return JsonResponse({
-        'messages': filtered_messages,
+       'messages': list(map(lambda m: {
+            'id': m.id,
+            'sender': m.sender.id,
+            'recipient': m.recipient.id,
+            'date': m.date
+        }, messages))
     })
+
 
 def add(request):
     sender_id = int(request.COOKIES.get('my_id'))
