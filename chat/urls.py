@@ -24,7 +24,7 @@ urlpatterns = [
 
     path('contacts/', views.contacts),
 
-    path('messages/<int:interlocutor_id>/', views.messages),
+    path('messages/<int:recipient_id>/', views.messages),
     path('messages/add/', views.add),
     
     path('exp/', views.experiments),

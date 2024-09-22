@@ -47,7 +47,7 @@ def contacts(request):
         }, persons))
     })
 
-def messages(request, interlocutor_id):
+def messages(request, recipient_id):
     my_id = int(request.COOKIES.get('my_id'))
 
     messages = Message.objects.filter(Q(sender=my_id) | Q(recipient=my_id))

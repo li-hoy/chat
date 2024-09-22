@@ -29,7 +29,7 @@
                 id: 0,
                 name: 'Николай',
             },
-            current_interlocutor_id: null,
+            current_recipient_id: null,
             message_feed: [],
             chats: {},
             contacts: [],
@@ -65,15 +65,15 @@
                         .querySelector('input');
 
                     shared_data.message_feed.push({
-                        author_id: this.shared.me.id,
-                        interlocutor_id: this.shared.current_interlocutor_id,
+                        sender_id: this.shared.me.id,
+                        recipient_id: this.shared.current_recipient_id,
                         content: input.value
                     });
 
                     this.message = '';
 
                     message = {
-                        recipient_id: this.shared.current_interlocutor_id,
+                        recipient_id: this.shared.current_recipient_id,
                         text: input.value
                     }
 
@@ -97,7 +97,7 @@
                     return (this.message === '');
                 },
                 resultMessageFeed() {
-                    return this.shared.chats[this.shared.current_interlocutor_id];
+                    return this.shared.chats[this.shared.current_recipient_id];
                 }
             },
             template: `
@@ -107,12 +107,12 @@
                             v-bind:class="[
                                 'message',
                                 {
-                                    'message-self': (message.author_id === shared.me.id),
+                                    'message-self': (message.sender_id === shared.me.id),
                                 }
                             ]"
                             v-for="message in resultMessageFeed"
                         >
-                            [[message.content]]
+                            [[message.text]]
                         </div>
                     </div>
                     <div id="message-panel" class="panel input-panel">
@@ -140,17 +140,17 @@
             },
             methods: {
                 select: async function ($event) {
-                    this.shared.current_interlocutor_id = parseInt($event.target.getAttribute('data-contact-id'));
+                    this.shared.current_recipient_id = parseInt($event.target.getAttribute('data-contact-id'));
 
-                    let response = await fetch('/messages/' + this.shared.current_interlocutor_id + '/');
+                    let response = await fetch('/messages/' + this.shared.current_recipient_id + '/');
 
                     if (response.ok) {
-                        this.shared.chats[this.shared.current_interlocutor_id] = (await response.json()).messages;
+                        this.shared.chats[this.shared.current_recipient_id] = (await response.json()).messages;
                     } else {
                         console.error("Ошибка HTTP: " + response.status);
                     }
 
-                    this.shared.message_feed = this.shared.chats[this.shared.current_interlocutor_id];
+                    this.shared.message_feed = this.shared.chats[this.shared.current_recipient_id];
                 },
             },
             computed: {
@@ -179,13 +179,13 @@
                             v-bind:class="[
                                 'contact',
                                 {
-                                    'contact-selected': (contact.id === shared.current_interlocutor_id),
+                                    'contact-selected': (contact.id === shared.current_recipient_id),
                                 }
                             ]"
                             v-for="contact in resultContactList"
                             @click="select($event)"
                             :data-contact-id="contact.id"
-                            :data-current-interlocutor-id="shared.current_interlocutor_id"
+                            :data-current-recipient-id="shared.current_recipient_id"
                         >
                             [[contact.name]]
                         </div>
