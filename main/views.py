@@ -7,20 +7,6 @@ from django.core import serializers
 import json
 from django.db.models import Q
 
-def experiments(request):
-    try:
-        p = Person.objects.get(id = 2)
-
-        name = p.name
-    except:
-        name = '-'
-   
-    context = {
-        "content": name,
-    }
-
-    return render(request, 'title.html', context)
-
 def chat(request):
     my_id = 3
 
@@ -48,16 +34,26 @@ def contacts(request):
     })
 
 def messages(request, recipient_id):
+    if not recipient_id:
+        return JsonResponse({
+            'errors': [
+                'wrong recipient'
+            ]
+        })
+
     my_id = int(request.COOKIES.get('my_id'))
 
-    messages = Message.objects.filter(Q(sender=my_id) | Q(recipient=my_id))
+    messages = Message.objects.filter(
+        (Q(sender=my_id) & Q(recipient=recipient_id))
+        | (Q(sender=recipient_id) & Q(recipient=my_id))
+    )
 
     return JsonResponse({
        'messages': list(map(lambda m: {
-            'id': m.id,
-            'sender': m.sender.id,
-            'recipient': m.recipient.id,
-            'date': m.date
+            'sender_id': m.sender.id,
+            'recipient_id': m.recipient.id,
+            'date': m.date,
+            'text': m.text,
         }, messages))
     })
 
@@ -67,9 +63,16 @@ def add(request):
 
     request_data = json.loads(request.body)
 
+    recipient_id = int(request_data['recipient_id'] or 0)
+
+    if not recipient_id or request_data['text'] == '':
+        return JsonResponse({
+            'status': False,
+        })
+
     message = Message(
         sender_id = sender_id,
-        recipient_id = int(request_data['recipient_id']),
+        recipient_id = recipient_id,
         text = request_data['text'],
         date = timezone.now()
     )

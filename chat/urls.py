@@ -27,7 +27,5 @@ urlpatterns = [
     path('messages/<int:recipient_id>/', views.messages),
     path('messages/add/', views.add),
     
-    path('exp/', views.experiments),
-
     path('admin/', admin.site.urls),
 ]
