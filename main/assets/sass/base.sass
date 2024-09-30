@@ -68,10 +68,6 @@ main
                 text-align: right
     #contacts
         flex-grow: 1
-        #search-contact-panel
-            button
-                display: none
-                width: calc($search_panel_height * 3 - $border_width * 2)
         .contact
             display: flex
             background-color: $color_dark
@@ -142,3 +138,6 @@ button:disabled, button[disabled]
 
 #message-panel
     background-color: $color_light
+
+.action
+    color: $color_dark

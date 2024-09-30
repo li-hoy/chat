@@ -9,9 +9,7 @@
 </head>
 <body>
     <header>
-        <div id="me"></div>
-        <div id="auth">
-            {{ title }}
+        <div id="person_panel">
         </div>
     </header>
     <main>
@@ -131,18 +129,26 @@
                 this.load();
             },
             methods: {
-                load: async function () {
-                    let response = await fetch('/contacts');
+                load: function () {
+                    const self = this;
 
-                    if (response.ok) {
-                        this.shared.contacts = (await response.json()).contacts;
-                    } else {
-                        console.error("Ошибка HTTP: " + response.status);
-                    }
-
-                    {% comment %} axios.get('/contacts')
-                        .then((response) => console.log(response))
-                        .catch((error) => console.log(error)); {% endcomment %}
+                    fetch('/contacts')
+                        .then(response => {
+                            if (response.ok) {
+                                response
+                                    .json()
+                                    .then(result => {
+                                        self.shared.contacts = result.contacts;
+                                    })
+                            } else {
+                                console.error("Ошибка HTTP: " + response.status);
+                            }
+        
+                            // axios.get('/contacts')
+                            //     .then((response) => console.log(response))
+                            //    .catch((error) => console.log(error));
+        
+                        });
                 },
                 select: function ($event) {
                     current_recipient_id = parseInt($event.target.getAttribute('data-contact-id'));
@@ -181,7 +187,6 @@
                         <div class="input-wrapper">
                             <input type="text" v-model="search_text" placeholder="поиск по контактам" />
                         </div>
-                        <button>find</button>
                     </div>
                     <div id="contact-list">
                         <div
@@ -202,6 +207,43 @@
                 </div>
             `
         });
+
+        const person_panel = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#person_panel',
+            data: {
+                shared: shared_data,
+                login: null,
+                password: null,
+            },
+            methods: {
+                sign_up: function () {
+                    const self = this
+
+                    fetch('/persons/', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-type': 'application/json;charset=utf-8'
+                        },
+                        body: JSON.stringify({
+                            login: self.login,
+                            password: self.password,
+                        })
+                    })
+                }
+            },
+            template: `
+                <div id="person_panel" class="panel">
+                    <div class="input-wrapper">
+                        <input type="text" v-model="login" placeholder="логин" />
+                    </div>
+                    <div class="input-wrapper">
+                        <input type="password" v-model="password" placeholder="пароль" />
+                    </div>
+                    <a id="sign_up" class="action" href="javascript:void(0)" @click="sign_up">регистрация</a> / <a id="sign_in" class="action" href="javascript:void(0)" @click="sign_in">вход</a>
+                </div>
+            `
+        })
 
     </script>
     
