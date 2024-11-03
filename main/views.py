@@ -1,30 +1,26 @@
 from django.shortcuts import render
-from main.models import Message
-from main.models import Person
+from .models import Message
 from django.http import JsonResponse
 from django.utils import timezone
 from django.core import serializers
 import json
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
+from users.forms.login_form import LoginUserForm
 
-def chat(request):
-    my_id = 3
 
-    context = {
-        "my_id": my_id,
-        "title": 'chat',
-    }
+def home(request):
+    context = {}
 
-    response = render(request, 'chat.html', context)
+    if not request.user.is_authenticated:
+        context['form'] = LoginUserForm()
 
-    response.set_cookie('my_id', 3)
+    return render(request, 'home.html', context)
 
-    return response
 
+@login_required
 def contacts(request):
-    my_id = int(request.COOKIES.get('my_id'))
-
-    persons = Person.objects.exclude(id=my_id)
+    persons = Person.objects.exclude(id=request.user.id)
 
     return JsonResponse({
        'contacts': list(map(lambda p: {
@@ -33,6 +29,8 @@ def contacts(request):
         }, persons))
     })
 
+
+@login_required
 def messages(request, recipient_id):
     if not recipient_id:
         return JsonResponse({
@@ -41,7 +39,7 @@ def messages(request, recipient_id):
             ]
         })
 
-    my_id = int(request.COOKIES.get('my_id'))
+    my_id = request.user.id
 
     messages = Message.objects.filter(
         (Q(sender=my_id) & Q(recipient=recipient_id))
@@ -58,8 +56,9 @@ def messages(request, recipient_id):
     })
 
 
+@login_required
 def add(request):
-    sender_id = int(request.COOKIES.get('my_id'))
+    sender_id = request.user.id
 
     request_data = json.loads(request.body)
 

@@ -1,33 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>vue school</title>
+    <title>chat</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
 </head>
 <body>
-    <header>
-        <div id="me"></div>
-        <div id="auth">
-            {{ title }}
-        </div>
-    </header>
-    <main>
-        <div id="chat"></div>
-        <div id="contacts"></div>
-    </main>
-    <footer>
-    </footer>
+    {% if user.is_authenticated %}
+        <header>
+            <div id="logo" class="panel">chat</div>
+            <div id="person"></div>
+        </header>
+        <main>
+            <div id="chat"></div>
+            <div id="contacts" class="panel"></div>
+        </main>
+        <footer>
+        </footer>
+    {% else %}
+        <main>
+            <div class="login-panel-wrapper">
+                <div class="panel login-panel">
+                    <form method="post" class="login-form">
+                        {% csrf_token %}
+                        <div class="form-error">{{ form.non_field_errors }}</div>
+                        <table>
+                        {% for f in form %}
+                            <tr>
+                                <th><label for="{{ f.id_for_label }}">{{f.label}}: </label></th>
+                                <td>{{ f }}</td>
+                                <td class="form-error">{{ f.errors }}</td>
+                            </tr>
+                        {% endfor %}
+                        </table>
+                        <div class="login-form-buttons">
+                            <button type="submit" formaction="/users/login/">Войти</button>
+                            <span>|</span>
+                            <button type="submit" formaction="/users/registration/">Регистрация</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    {% endif %}
 
+    {% if user.is_authenticated %}
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-
+    
     <script>
         const shared_data = {
             me : {
-                id: 3,
-                name: 'Николай',
+                id: {{ user.id }},
+                name: '{{ user.username }}',
             },
             current_recipient_id: null,
             message_feed: [],
@@ -51,14 +77,10 @@
                     } else {
                         console.error("Ошибка HTTP: " + response.status);
                     }
-
-                    {% comment %} axios.get('/contacts')
-                        .then((response) => console.log(response))
-                        .catch((error) => console.log(error)); {% endcomment %}
                 },
                 send: async function ($event) {
                     this.message = '';
-                    
+
                     const input = $event.target
                         .parentElement
                         .querySelector('input');
@@ -70,7 +92,8 @@
                         },
                         body: JSON.stringify({
                             recipient_id: this.shared.current_recipient_id,
-                            text: input.value
+                            text: input.value,
+                            csrfmiddlewaretoken: document.querySelector('[name=csrfmiddlewaretoken]').value,
                         })
                     });
 
@@ -114,7 +137,15 @@
                                 placeholder="введите сообщение"
                             />
                         </div>
-                        <button @click="send($event)" :disabled="isSendButtonDisabled">send</button>
+                        {% csrf_token %}
+                        <button
+                            @click="send($event)"
+                                {% if user.is_authenticated %}
+                                :disabled="isSendButtonDisabled"
+                            {% else %}
+                                disabled
+                            {% endif %}
+                        >send</button>
                     </div>
                 </div>
             `
@@ -131,18 +162,26 @@
                 this.load();
             },
             methods: {
-                load: async function () {
-                    let response = await fetch('/contacts');
+                load: function () {
+                    const self = this;
 
-                    if (response.ok) {
-                        this.shared.contacts = (await response.json()).contacts;
-                    } else {
-                        console.error("Ошибка HTTP: " + response.status);
-                    }
-
-                    {% comment %} axios.get('/contacts')
-                        .then((response) => console.log(response))
-                        .catch((error) => console.log(error)); {% endcomment %}
+                    fetch('/contacts')
+                        .then(response => {
+                            if (response.ok) {
+                                response
+                                    .json()
+                                    .then(result => {
+                                        self.shared.contacts = result.contacts;
+                                    })
+                            } else {
+                                console.error("Ошибка HTTP: " + response.status);
+                            }
+        
+                            // axios.get('/contacts')
+                            //     .then((response) => console.log(response))
+                            //    .catch((error) => console.log(error));
+        
+                        });
                 },
                 select: function ($event) {
                     current_recipient_id = parseInt($event.target.getAttribute('data-contact-id'));
@@ -181,7 +220,6 @@
                         <div class="input-wrapper">
                             <input type="text" v-model="search_text" placeholder="поиск по контактам" />
                         </div>
-                        <button>find</button>
                     </div>
                     <div id="contact-list">
                         <div
@@ -203,7 +241,20 @@
             `
         });
 
+        const person_panel = new Vue({
+            delimiters: ['[[', ']]'],
+            el: '#person',
+            template: `
+                <div id="person" class="panel">
+                    {% if user.is_authenticated %}
+                        <button onclick="location.href='{% url 'users:logout' %}'">Выйти</button>
+                    {% endif %}
+                </div>
+            `
+        })
+
     </script>
+{% endif %}
     
 </body>
 </html>
