@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.core import serializers
 import json
 from django.db.models import Q
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from users.forms.login_form import LoginUserForm
 
@@ -20,7 +21,7 @@ def home(request):
 
 @login_required
 def contacts(request):
-    persons = Person.objects.exclude(id=request.user.id)
+    persons = User.objects.exclude(id=request.user.id)
 
     return JsonResponse({
        'contacts': list(map(lambda p: {
