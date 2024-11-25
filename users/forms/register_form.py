@@ -7,9 +7,8 @@ class RegistrationUserForm(forms.ModelForm):
 
     class Meta:
         model = get_user_model()
-        fields = ['username', 'email', 'first_name', 'last_name', 'password']
+        fields = ['username', 'password']
         labels = {
-            'email': 'E-mail',
             'first_name': 'Имя',
             'last_name': 'Фамилия',
         }

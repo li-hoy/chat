@@ -1,11 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django import forms
-from django.http import HttpResponse, Http404, HttpResponseBadRequest, HttpResponseRedirect, HttpResponseServerError
-from django.shortcuts import render
+from django.http import Http404, HttpResponseBadRequest, HttpResponseRedirect
 from django.urls import reverse
 from users.forms.login_form import LoginUserForm
 from users.forms.register_form import RegistrationUserForm
+
 
 def register_user(request):
     if request.method != 'POST':
@@ -14,21 +14,23 @@ def register_user(request):
     form = RegistrationUserForm(request.POST)
 
     if not form.is_valid():
-        return HttpResponseBadRequest()
+        raise forms.ValidationError(form.errors.as_text)
     
     user_data = form.cleaned_data
 
-    if User.objects.filter(username=user_data['username']).exists():
-        return HttpResponse('Пользователь с таким логином уже зарегистрирован')
+    # if User.objects.filter(username=user_data['username']).exists():
+    #     raise forms.ValidationError('Пользователь с таким логином уже зарегистрирован')
     
     user = form.save(commit=False)
-    user.set_password(form.cleaned_data['password'])
+    user.set_password(user_data['password'])
     user.save()
 
-    user = authenticate(request, username=user.username, password=user.password)
+    user = authenticate(request, username=user_data['username'], password=user_data['password'])
 
-    if not user.is_active:
-        return HttpResponseServerError()
+    if not user or not user.is_active:
+        raise forms.ValidationError("Ошибка аутентификации.")
+
+    login(request, user)
 
     return HttpResponseRedirect(reverse('home'))
 
