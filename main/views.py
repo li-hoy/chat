@@ -1,17 +1,16 @@
 from django.shortcuts import render
 from .models import Message
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.utils import timezone
 import json
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from users.forms.login_form import LoginUserForm
-
+from django.urls import reverse
 
 def home(request):
     if not request.user.is_authenticated:
-        return render(request, 'login.html', {'form': LoginUserForm()})
+        return HttpResponseRedirect(reverse('login'))
 
     return render(request, 'home.html')
 
