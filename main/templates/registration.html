@@ -9,8 +9,8 @@
 </head>
 <body>
     <main>
-        <div class="login-panel-wrapper">
-            <div class="panel login-panel">
+        <div class="registration-panel-wrapper">
+            <div class="panel registration-panel">
                 <form method="post" class="login-form">
                     {% csrf_token %}
                     <div class="form-error">{{ form.non_field_errors }}</div>
@@ -24,8 +24,6 @@
                     {% endfor %}
                     </table>
                     <div class="login-form-buttons">
-                        <button type="submit" formaction="/users/login/">Войти</button>
-                        <span>|</span>
                         <button type="submit" formaction="/users/registration/">Регистрация</button>
                     </div>
                 </form>
