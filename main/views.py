@@ -7,12 +7,15 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from users.forms.login_form import LoginUserForm
 
 def home(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('users:login'))
+    context = {}
 
-    return render(request, 'home.html')
+    if not request.user.is_authenticated:
+        context['login_form'] = LoginUserForm(request.POST)
+
+    return render(request, 'home.html', context)
 
 
 @login_required

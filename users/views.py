@@ -9,24 +9,28 @@ from users.forms.register_form import RegistrationUserForm
 
 
 def register_user(request):
-    if request.method != 'POST':
-        return Http404()
-    
-    form = RegistrationUserForm(request.POST)
-
-    if form.is_valid():
-        user = form.save(commit=False)
-        user.set_password(form.cleaned_data['password'])
-        user.save()
-
-    return login_user(request, form)
-
-
-def login_user(request, form = None):
     if request.method == 'GET':
-        form = form if form else LoginUserForm()
+        form = RegistrationUserForm()
+
+        return render(request, 'registration.html', {'form': form})
     elif request.method == 'POST':
-        form = form if form else LoginUserForm(request.POST)
+        form = RegistrationUserForm(request.POST)
+
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+
+            return login_user(request)
+        
+        return render(request, 'registration.html', {'form': form})
+    else:
+        return Http404()
+
+
+def login_user(request):
+    if request.method == 'POST':
+        form = LoginUserForm(request.POST)
         
         if form.is_valid():
             user_data = form.cleaned_data
@@ -36,16 +40,12 @@ def login_user(request, form = None):
             if user and user.is_active:
                 login(request, user)
 
-                return HttpResponseRedirect(reverse('home'))
-            else:
-                form.add_error(None, 'Неправильный логин или пароль.')
+            return HttpResponseRedirect(reverse('home'))
     else:
         return Http404()
-
-    return render(request, 'login.html', {'form': form})
 
 
 def logout_user(request):
     logout(request)
 
-    return HttpResponseRedirect(reverse('users:login'))
+    return HttpResponseRedirect(reverse('home'))

@@ -11,11 +11,31 @@
     <header>
         <div id="logo" class="panel">chat</div>
         <div id="user">
-            <span name="user_name">{{ user.username }}</span>
-            <button onclick="location.href='{% url 'users:logout' %}'">Выйти</button>
-            <form name="user">
-                <input type="hidden" name="user_id" value="{{ user.id }}"></input>
-            </form>
+            {% if user.is_authenticated %}
+                <span name="user_name">{{ user.username }}</span>
+                <form name="user" action="/users/logout/" method="post" class="login-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="user_id" value="{{ user.id }}"></input>
+                    <button type="submit">Выйти</button>
+                </form>
+            {% else %}
+                <form name="user" action="/users/login/" method="post">
+                    {% csrf_token %}
+                    <div class="form-error">{{ login_form.non_field_errors }}</div>
+                    <table>
+                    {% for field in login_form %}
+                        <tr>
+                            <th><label for="{{ field.id_for_label }}">{{ field.label }}:</label></th>
+                            <td>{{ field }}</td>
+                            <td class="form-error">{{ field.errors }}</td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                    <div class="login-form-buttons">
+                        <button type="submit">Войти</button>
+                    </div>
+                </form>
+            {% endif %}
         </div>
     </header>
     <main>
