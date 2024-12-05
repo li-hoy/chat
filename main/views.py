@@ -10,7 +10,7 @@ from django.urls import reverse
 
 def home(request):
     if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('login'))
+        return HttpResponseRedirect(reverse('users:login'))
 
     return render(request, 'home.html')
 

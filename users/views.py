@@ -14,33 +14,19 @@ def register_user(request):
     
     form = RegistrationUserForm(request.POST)
 
-    if not form.is_valid():
-        raise forms.ValidationError(form.errors.as_text)
-    
-    user_data = form.cleaned_data
+    if form.is_valid():
+        user = form.save(commit=False)
+        user.set_password(form.cleaned_data['password'])
+        user.save()
 
-    if User.objects.filter(username=user_data['username']).exists():
-        raise forms.ValidationError('Пользователь с таким логином уже зарегистрирован')
-    
-    user = form.save(commit=False)
-    user.set_password(user_data['password'])
-    user.save()
-
-    user = authenticate(request, username=user_data['username'], password=user_data['password'])
-
-    if not user or not user.is_active:
-        raise forms.ValidationError("Ошибка аутентификации.")
-
-    login(request, user)
-
-    return HttpResponseRedirect(reverse('home'))
+    return login_user(request, form)
 
 
-def login_user(request):
+def login_user(request, form = None):
     if request.method == 'GET':
-        form = LoginUserForm()
+        form = form if form else LoginUserForm()
     elif request.method == 'POST':
-        form = LoginUserForm(request.POST)
+        form = form if form else LoginUserForm(request.POST)
         
         if form.is_valid():
             user_data = form.cleaned_data
@@ -49,6 +35,8 @@ def login_user(request):
 
             if user and user.is_active:
                 login(request, user)
+
+                return HttpResponseRedirect(reverse('home'))
             else:
                 form.add_error(None, 'Неправильный логин или пароль.')
     else:
@@ -60,4 +48,4 @@ def login_user(request):
 def logout_user(request):
     logout(request)
 
-    return HttpResponseRedirect(reverse('home'))
+    return HttpResponseRedirect(reverse('users:login'))
