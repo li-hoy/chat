@@ -8,43 +8,17 @@
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
 </head>
 <body>
-    <header>
-        <div id="logo" class="panel">chat</div>
-        <div id="user">
-            {% if user.is_authenticated %}
-                <span name="user_name">{{ user.username }}</span>
-                <form name="user" action="/users/logout/" method="post" class="login-form">
-                    {% csrf_token %}
-                    <input type="hidden" name="user_id" value="{{ user.id }}"></input>
-                    <button type="submit">Выйти</button>
-                </form>
-            {% else %}
-                <form name="user" action="/users/login/" method="post">
-                    {% csrf_token %}
-                    <div class="form-error">{{ login_form.non_field_errors }}</div>
-                    <table>
-                    {% for field in login_form %}
-                        <tr>
-                            <th><label for="{{ field.id_for_label }}">{{ field.label }}:</label></th>
-                            <td>{{ field }}</td>
-                            <td class="form-error">{{ field.errors }}</td>
-                        </tr>
-                    {% endfor %}
-                    </table>
-                    <div class="login-form-buttons">
-                        <button type="submit">Войти</button>
-                    </div>
-                </form>
-            {% endif %}
-        </div>
-    </header>
+    {% include "header.html" %}
     <main>
-        {% csrf_token %}
-        <div id="chat"></div>
-        <div id="contacts" class="panel"></div>
+        {% if user.is_authenticated %}
+            {% csrf_token %}
+            <div id="chat"></div>
+            <div id="contacts" class="panel"></div>
+        {% else %}
+            {% include "one_form.html" with form=login_form action="/users/login/" submit_button_text="Войти" only %}
+        {% endif %}
     </main>
-    <footer>
-    </footer>
+    {% include "footer.html" %}
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="{% static 'js/chat.js' %}"></script>

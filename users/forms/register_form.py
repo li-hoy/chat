@@ -6,10 +6,10 @@ class RegistrationUserForm(forms.ModelForm):
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
     password2 = forms.CharField(label='Повторите пароль', widget=forms.PasswordInput(attrs={'class': 'form-input'}))
 
-    class Meta:
-        model = get_user_model()
-        fields = ['username', 'password']
-        # labels = {
-        #     'first_name': 'Имя',
-        #     'last_name': 'Фамилия',
-        # }
+    # class Meta:
+    #     model = get_user_model()
+    #     fields = ['username', 'password']
+    #     labels = {
+    #         'first_name': 'Имя',
+    #         'last_name': 'Фамилия',
+    #     }

@@ -8,27 +8,10 @@
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
 </head>
 <body>
+    {% include "header.html" %}
     <main>
-        <div class="registration-panel-wrapper">
-            <div class="panel registration-panel">
-                <form method="post" class="login-form">
-                    {% csrf_token %}
-                    <div class="form-error">{{ form.non_field_errors }}</div>
-                    <table>
-                    {% for field in form %}
-                        <tr>
-                            <th><label for="{{ field.id_for_label }}">{{ field.label }}:</label></th>
-                            <td>{{ field }}</td>
-                            <td class="form-error">{{ field.errors }}</td>
-                        </tr>
-                    {% endfor %}
-                    </table>
-                    <div class="login-form-buttons">
-                        <button type="submit" formaction="/users/registration/">Регистрация</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        {% include "one_form.html" with form=form action="/users/registration/" submit_button_text="Регистрация" only %}
     </main>
+    {% include "footer.html" %}
 </body>
 </html>

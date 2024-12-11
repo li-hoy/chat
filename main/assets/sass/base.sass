@@ -14,6 +14,8 @@ $color_error: #f04444
 $border_radius: .25em
 $border_radius_middle: $border_radius * 2
 $border_radius_big: $border_radius_middle * 2
+$header_height: 4em
+$footer_height: 2em
 
 root
     font-size: 14px
@@ -48,6 +50,7 @@ header, main, footer
 header
     display: flex
     justify-content: space-between
+    height: $header_height
     padding: $padding 0
 
 body
@@ -64,6 +67,7 @@ main
     flex-direction: row
     justify-content: space-between
     flex-grow: 1
+    background-color: white
     #chat
         display: flex
         flex-direction: column
@@ -115,7 +119,7 @@ main
             margin-top: $padding
 
 footer
-    height: 2em
+    height: $footer_height
 
 button
     color: $color_lighter
@@ -124,7 +128,6 @@ button
     border-radius: .5em
     background-color: $color_darker
     padding: .75em 1.25em
-    margin-left: 2 * $border_radius
 
 button:hover
     background-color: $color_dark
@@ -176,8 +179,17 @@ button:disabled, button[disabled]
             outline: none
             width: 100%
             height: calc(100% - 2 * $border_radius)
+    button
+        margin-left: 2 * $border_radius
 
-.registration-panel
+.one-form-panel-wrapper
+    display: flex
+    background-color: $color_super_light
+    justify-content: center
+    align-items: center
+    width: 100%
+
+.one-form-panel
     display: flex
     justify-content: center
     align-items: center
@@ -185,13 +197,6 @@ button:disabled, button[disabled]
     border-radius: $border_radius_middle
     background-color: $color_light
     padding: 1.25em 2em
-
-.registration-panel-wrapper
-    display: flex
-    justify-content: center
-    align-items: center
-    width: 100%
-    height: 100vh
 
 form
     th
@@ -201,27 +206,17 @@ form
             font-weight: normal
             text-align: right    
 
-form.login-form
+form.one-form
     display: flex
     flex-direction: column
     justify-content: right
     p
         margin: 0
-    .login-form-buttons
+    .one-form-buttons
         display: flex
         justify-content: center
         margin-top: 1em
         padding: .25em
-        *
-            padding: 0 .25em
-        button
-            color: inherit
-            font-weight: normal
-            background-color: inherit
-            padding: 0
-            margin: 0
-        button:hover
-            text-decoration: underline
 
 ul.errorlist
     display: flex
