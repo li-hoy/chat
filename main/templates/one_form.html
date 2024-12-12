@@ -8,8 +8,13 @@
                 <tr>
                     <th><label for="{{ field.id_for_label }}">{{ field.label }}:</label></th>
                     <td>{{ field }}</td>
-                    <td class="form-error">{{ field.errors }}</td>
                 </tr>
+                {% if field.errors %}
+                    <tr>
+                        <th></th>
+                        <td class="form-error">{{ field.errors }}</td>
+                    </tr>
+                {% endif %}
             {% endfor %}
             </table>
             <div class="one-form-buttons">

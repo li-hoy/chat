@@ -13,7 +13,7 @@ def home(request):
     context = {}
 
     if not request.user.is_authenticated:
-        context['login_form'] = LoginUserForm(request.POST)
+        context['login_form'] = LoginUserForm()
 
     return render(request, 'home.html', context)
 
