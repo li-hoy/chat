@@ -20,6 +20,12 @@ $footer_height: 2em
 root
     font-size: 14px
 
+a
+    text-decoration: none
+
+a:hover
+    text-decoration: underline
+
 .bg-color-super-dark
     background-color: $color_super_dark
 
@@ -146,17 +152,12 @@ button:disabled, button[disabled]
     display: flex
     justify-content: space-between
     align-items: center
-    padding: $padding
     margin: $padding
+    * + *
+        margin-left: $padding
     [name="user_name"]
         color: $color_super_dark
         font-weight: bold
-
-#logo-panel
-    display: flex
-
-#message-panel
-    background-color: $color_light
 
 .input-panel
     display: flex
@@ -182,8 +183,9 @@ button:disabled, button[disabled]
     button
         margin-left: 2 * $border_radius
 
-.one-form-panel-wrapper
+.form-panel-wrapper
     display: flex
+    flex-flow: column nowrap
     background-color: $color_super_light
     justify-content: center
     align-items: center
@@ -191,6 +193,7 @@ button:disabled, button[disabled]
 
 .one-form-panel
     display: flex
+    flex-flow: column nowrap
     justify-content: center
     align-items: center
     border: none
@@ -230,6 +233,15 @@ form.one-form
         margin-top: 1em
         padding: .25em
 
-
 .form-error
     color: $color_error
+
+#logo-panel
+    display: flex
+
+#message-panel
+    background-color: $color_light
+
+#registration_link
+    margin-top: 2em
+    color: $color_darker

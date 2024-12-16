@@ -10,9 +10,10 @@
 <body>
     {% include "header.html" %}
     <main>
-        {% include "one_form.html" with form=form action="/users/registration/" submit_button_text="Регистрация" csrf_token=csrf_token
-            only
-        %}
+        <div class="form-panel-wrapper">
+            {% url 'users:registration' as registration_form_url %}
+            {% include "one_form.html" with form=form action=registration_form_url submit_button_text="Регистрация" csrf_token=csrf_token only %}
+        </div>
     </main>
     {% include "footer.html" %}
 </body>

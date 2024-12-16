@@ -15,7 +15,11 @@
             <div id="chat"></div>
             <div id="contacts" class="panel"></div>
         {% else %}
-            {% include "one_form.html" with form=login_form action="/users/login/" submit_button_text="Войти" csrf_token=csrf_token only %}
+            <div class="form-panel-wrapper">
+                {% url 'users:login' as login_form_url %}
+                {% include "one_form.html" with form=login_form action=login_form_url submit_button_text="Войти" csrf_token=csrf_token only %}
+                <a id="registration_link" href="{% url 'users:registration' %}">регистрация</a>
+            </div>
         {% endif %}
     </main>
     {% include "footer.html" %}
