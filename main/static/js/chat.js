@@ -1,4 +1,7 @@
 const shared_data = {
+    user : {
+        id: document.querySelector('#user_id').value,
+    },
     current_recipient_id: null,
     message_feed: [],
     chats: {},
@@ -28,30 +31,28 @@ const chat = new Vue({
                 .parentElement
                 .querySelector('input');
 
-            let response = await fetch('/messages/add/', {
+            fetch('/messages/add/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
                 },
                 body: JSON.stringify({
                     recipient_id: this.shared.current_recipient_id,
                     text: input.value,
-                    csrfmiddlewaretoken: document.querySelector('[name=csrfmiddlewaretoken]').value,
                 })
-            });
+            })
+                .then(response => response.json())
+                .then(data => shared_data.chats[shared_data.current_recipient_id] = data.messages)
+                .catch(error => console.error(error));
 
-            if (response.ok) {
-                shared_data.chats[shared_data.current_recipient_id] = (await response.json()).messages;
-            } else {
-                console.error("Ошибка HTTP: " + response.status);
-            }
         },
     },
     computed: {
         isSendButtonDisabled: function() {
             return (this.message === '' || this.shared.current_recipient_id < 1);
         },
-        resultMessageFeed() {
+        resultMessageFeed: function () {
             return this.shared.chats[this.shared.current_recipient_id];
         },
     },
@@ -62,7 +63,7 @@ const chat = new Vue({
                     v-bind:class="[
                         'message',
                         {
-                            'message-self': (message.sender_id === shared.me.id),
+                            'message-self': (message.sender_id == shared.user.id),
                         }
                     ]"
                     v-for="message in resultMessageFeed"
@@ -104,20 +105,14 @@ const contacts = new Vue({
 
             fetch('/contacts')
                 .then(response => {
-                    if (response.ok) {
-                        response
-                            .json()
-                            .then(result => {
-                                self.shared.contacts = result.contacts;
-                            })
-                    } else {
-                        console.error("Ошибка HTTP: " + response.status);
-                    }
+                    response.json()
+                        .then(result => self.shared.contacts = result.contacts)
+                })
+                .catch(error => console.error(error));
 
                     // axios.get('/contacts')
                     //     .then((response) => console.log(response))
                     //    .catch((error) => console.log(error));
-                });
         },
         select: function ($event) {
             current_recipient_id = parseInt($event.target.getAttribute('data-contact-id'));
@@ -126,15 +121,13 @@ const contacts = new Vue({
 
             fetch('/messages/' + current_recipient_id + '/')
                 .then(response => {
-                    if (response.ok) {
-                        response.json().then(data => {
+                    response.json()
+                        .then(data => {
                             shared.current_recipient_id = current_recipient_id;
                             shared.chats[shared.current_recipient_id] = data.messages;
                         })
-                    } else {
-                        console.error("Ошибка HTTP: " + response.status);
-                    }
-                });
+                })
+                .catch(error => console.error(error));
         },
     },
     computed: {

@@ -13,7 +13,8 @@ def home(request):
     context = {}
 
     if not request.user.is_authenticated:
-        context['login_form'] = LoginUserForm()
+        form_data = request.POST if request.method == 'POST' else None
+        context['login_form'] = LoginUserForm(form_data)
 
     return render(request, 'home.html', context)
 
@@ -25,7 +26,7 @@ def contacts(request):
     return JsonResponse({
        'contacts': list(map(lambda user: {
             'id': user.id,
-            'name': user.name,
+            'name': user.username,
         }, users))
     })
 

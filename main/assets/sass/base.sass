@@ -207,19 +207,25 @@ form
         justify-content: right
         label
             font-weight: normal
-            text-align: right    
-    ul.errorlist
-        display: flex
-        flex-flow: column nowrap 
-        list-style-type: none
-        margin-block-start: .05em
-        margin-block-end: .25em
-        margin-inline-start: 0px
-        margin-inline-end: 0px
-        padding-inline-start: 0px
-        li
+            text-align: right
+    td
+        width: 10em
+        input
+            width: 100%
+    .form-error
+        ul.errorlist
             display: flex
-            justify-content: left
+            flex-flow: column nowrap 
+            list-style-type: none
+            margin-block-start: .05em
+            margin-block-end: .25em
+            margin-inline-start: 0px
+            margin-inline-end: 0px
+            padding-inline-start: 0px
+            li
+                display: flex
+                flex-flow: row wrap
+                justify-content: left
 
 form.one-form
     display: flex
