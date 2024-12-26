@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Message
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse
 from django.utils import timezone
 import json
 from django.db.models import Q
@@ -77,6 +77,17 @@ def add(request):
 
     message.save()
 
+    messages = Message.objects.filter(
+        (Q(sender=sender_id) & Q(recipient=recipient_id))
+        | (Q(sender=recipient_id) & Q(recipient=sender_id))
+    )
+
     return JsonResponse({
         'status': True,
+        'messages': list(map(lambda m: {
+            'sender_id': m.sender.id,
+            'recipient_id': m.recipient.id,
+            'date': m.date,
+            'text': m.text,
+        }, messages)),
     })

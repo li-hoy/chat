@@ -24,8 +24,10 @@ const chat = new Vue({
                 console.error("Ошибка HTTP: " + response.status);
             }
         },
-        send: async function ($event) {
+        send: function ($event) {
             this.message = '';
+
+            const shared = this.shared;
 
             const input = $event.target
                 .parentElement
@@ -43,7 +45,14 @@ const chat = new Vue({
                 })
             })
                 .then(response => response.json())
-                .then(data => shared_data.chats[shared_data.current_recipient_id] = data.messages)
+                .then(data => {
+                    shared.chats[shared.current_recipient_id] = data.messages
+
+                    // тригерим обновление сообщений
+                    const recipient_id = shared.current_recipient_id
+                    shared.current_recipient_id = 0
+                    shared.current_recipient_id = recipient_id
+                })
                 .catch(error => console.error(error));
 
         },
@@ -120,12 +129,10 @@ const contacts = new Vue({
             shared = this.shared;
 
             fetch('/messages/' + current_recipient_id + '/')
-                .then(response => {
-                    response.json()
-                        .then(data => {
-                            shared.current_recipient_id = current_recipient_id;
-                            shared.chats[shared.current_recipient_id] = data.messages;
-                        })
+                .then(response => response.json())
+                .then(data => {
+                    shared.current_recipient_id = current_recipient_id;
+                    shared.chats[shared.current_recipient_id] = data.messages;
                 })
                 .catch(error => console.error(error));
         },
