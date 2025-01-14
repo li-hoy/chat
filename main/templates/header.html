@@ -1,0 +1,13 @@
+<header>
+    <div id="logo" class="panel">C h a T</div>
+    <div id="user">
+        {% if user.is_authenticated %}
+            <span name="user_name">{{ user.username }}</span>
+            <form name="user" action="/users/logout/" method="post" class="login-form">
+                {% csrf_token %}
+                <input type="hidden" id="user_id" name="user_id" value="{{ user.id }}"></input>
+                <button type="submit">Выйти</button>
+            </form>
+        {% endif %}
+    </div>
+</header>

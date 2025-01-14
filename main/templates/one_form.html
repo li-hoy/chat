@@ -1,0 +1,23 @@
+    <div class="panel one-form-panel">
+        <form name="user" {% if action %}action="{{ action }}"{% endif %} method="post" class="one-form">
+            {% csrf_token %}
+            <div class="form-error">{{ form.non_field_errors }}</div>
+            <table>
+            {% for field in form %}
+                <tr>
+                    <th><label for="{{ field.id_for_label }}">{{ field.label }}:</label></th>
+                    <td>{{ field }}</td>
+                </tr>
+                {% if field.errors %}
+                    <tr>
+                        <th></th>
+                        <td><div class="form-error">{{ field.errors }}</div></td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            </table>
+            <div class="one-form-buttons">
+                <button type="submit">{{ submit_button_text }}</button>
+            </div>
+        </form>
+    </div>

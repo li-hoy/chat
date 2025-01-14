@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chat</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+</head>
+<body>
+    {% include "header.html" %}
+    <main>
+        {% if user.is_authenticated %}
+            {% csrf_token %}
+            <div id="chat"></div>
+            <div id="contacts" class="panel"></div>
+        {% else %}
+            <div class="form-panel-wrapper">
+                {% url 'users:login' as login_form_url %}
+                {% include "one_form.html" with form=login_form action=login_form_url submit_button_text="Войти" csrf_token=csrf_token only %}
+                <a id="registration_link" href="{% url 'users:registration' %}">регистрация</a>
+            </div>
+        {% endif %}
+    </main>
+    {% include "footer.html" %}
+
+    <script src="{% static 'js/index.js' %}"></script>
+</body>
+</html>

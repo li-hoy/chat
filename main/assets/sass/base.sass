@@ -1,0 +1,262 @@
+$input_panel_height: 3em
+$search_panel_height: $input_panel_height
+$border_width: 1px
+$padding: .5rem
+$color_super_dark: #404040
+$color_darker: #aaa
+$color_dark: #bbb
+$color_middle: #ccc
+$color_light: #ddd
+$color_light_middle: #e0e0e0
+$color_lighter: #eee
+$color_super_light: #f7f7f7
+$color_error: #f04444
+$border_radius: .25em
+$border_radius_middle: $border_radius * 2
+$border_radius_big: $border_radius_middle * 2
+$header_height: 4em
+$footer_height: 2em
+
+root
+    font-size: 14px
+
+a
+    text-decoration: none
+
+a:hover
+    text-decoration: underline
+
+.bg-color-super-dark
+    background-color: $color_super_dark
+
+.bg-color-darker
+    background-color: $color_darker
+
+.bg-color-dark
+    background-color: $color_dark
+
+.bg-color-middle
+    background-color: $color_middle
+
+.bg-color-light
+    background-color: $color_light
+
+.bg-color-light-middle
+    background-color: $color_light_middle
+
+.bg-color-lighter
+    background-color: $color_lighter
+
+.bg-color-super-light
+    background-color: $color_super_light
+
+header, main, footer
+    background-color: $color_darker
+
+header
+    display: flex
+    justify-content: space-between
+    align-items: center
+    height: $header_height
+    padding: $padding 0
+
+body
+    color: $color_super_dark
+    display: flex
+    flex-direction: column
+    min-height: 100vh
+    min-width: 720px
+    margin: 0
+    padding: 0
+    
+main
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    flex-grow: 1
+    background-color: white
+    #chat
+        display: flex
+        flex-direction: column
+        flex-grow: 6
+        #message-feed
+            display: flex
+            flex-direction: column
+            justify-content: flex-end
+            flex-grow: 1
+            padding: $padding
+            background-color: $color_lighter
+            .message
+                background-color: $color_light_middle
+                border: $border_width solid $color_light
+                border-radius: $border_radius
+                padding: $padding
+                min-width: 5rem
+                width: fit-content
+            * + .message
+                margin-top: $padding
+            .message-self
+                background-color: $color_light
+                border-color: $color_dark
+                align-self: flex-end
+        #message-panel
+            display: flex
+            justify-content: space-between
+            height: $input_panel_height
+            input
+                text-align: right
+    #contacts
+        flex-grow: 1
+        background-color: lightgray
+        .contact
+            display: flex
+            background-color: $color_dark
+            border-radius: $border_radius
+            padding: $padding
+            min-width: 5rem
+            width: auto
+            font-weight: bold
+            color: $color_lighter
+            padding-left: $padding * 2
+            cursor: pointer
+        .contact-selected
+            color: $color_super_light
+            background-color: $color_darker
+        .contact + .contact
+            margin-top: $padding
+
+footer
+    height: $footer_height
+
+button
+    color: $color_lighter
+    font-weight: bold
+    border: none
+    border-radius: .5em
+    background-color: $color_darker
+    padding: .75em 1.25em
+
+button:hover
+    background-color: $color_dark
+    cursor: pointer
+
+button:active
+   background-color: $color_middle
+
+button:disabled, button[disabled]
+   background-color: $color_light_middle
+
+.panel
+    padding: 0 $padding
+
+#user
+    display: flex
+    justify-content: space-between
+    align-items: center
+    margin: $padding
+    * + *
+        margin-left: $padding
+    [name="user_name"]
+        color: $color_super_dark
+        font-weight: bold
+
+.input-panel
+    display: flex
+    justify-content: space-between
+    align-items: center
+    height: $search_panel_height
+    *
+        border-width: 0
+        height: calc(100% - 2 * $padding)
+    .input-wrapper
+        display: flex
+        flex: 1
+        justify-content: start
+        align-items: center
+        background-color: white
+        padding: 0 10px
+        border-radius: $border_radius
+        input
+            border: none
+            outline: none
+            width: 100%
+            height: calc(100% - 2 * $border_radius)
+    button
+        margin-left: 2 * $border_radius
+
+.form-panel-wrapper
+    display: flex
+    flex-flow: column nowrap
+    background-color: $color_super_light
+    justify-content: center
+    align-items: center
+    width: 100%
+
+.one-form-panel
+    display: flex
+    flex-flow: column nowrap
+    justify-content: center
+    align-items: center
+    border: none
+    border-radius: $border_radius_middle
+    background-color: $color_light
+    padding: 1.25em 2em
+
+form
+    th
+        display: flex
+        justify-content: right
+        label
+            font-weight: normal
+            text-align: right
+    td
+        width: 10em
+        input
+            width: 100%
+    .form-error
+        ul.errorlist
+            display: flex
+            flex-flow: column nowrap 
+            list-style-type: none
+            margin-block-start: .05em
+            margin-block-end: .25em
+            margin-inline-start: 0px
+            margin-inline-end: 0px
+            padding-inline-start: 0px
+            li
+                display: flex
+                flex-flow: row wrap
+                justify-content: left
+
+form.one-form
+    display: flex
+    flex-direction: column
+    justify-content: right
+    p
+        margin: 0
+    .one-form-buttons
+        display: flex
+        justify-content: center
+        margin-top: 1em
+        padding: .25em
+
+.form-error
+    color: $color_error
+
+#logo
+    display: flex
+    color: $color_super_dark
+    font-size: 1em
+    font-weight: bolder
+    padding: 1em 2em
+    margin: 0 1em
+    border: 0
+    border-radius: 1.5em
+    background-color: $color_super_light
+
+#message-panel
+    background-color: $color_light
+
+#registration_link
+    margin-top: 2em
+    color: $color_darker
