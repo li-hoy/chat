@@ -17,6 +17,7 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "vue": "^2.7.16"
+    "vue": "^2.7.16",
+    "vuex": "^3.6.2"
   }
 }
