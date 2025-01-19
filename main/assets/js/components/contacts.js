@@ -1,13 +1,13 @@
 import Vue from 'vue';
-import shared_data from '../shared_data';
+import { store, shared_data } from '../store';
 
 const element_id = 'contacts';
 
 if (document.getElementById(element_id)) {
     const contacts = new Vue({
         el: '#' + element_id,
+        store,
         data: {
-            shared: shared_data,
             search_text: null,
         },
         created: function () {
@@ -15,40 +15,48 @@ if (document.getElementById(element_id)) {
         },
         methods: {
             load: function () {
-                const self = this;
+                const store = this.$store;
 
                 fetch('/contacts')
                     .then(response => {
                         response.json()
-                            .then(result => self.shared.contacts = result.contacts)
+                            .then(result => store.commit('contacts', result.contacts));
                     })
                     .catch(error => console.error(error));
             },
             select: function ($event) {
-                const current_recipient_id = parseInt($event.target.getAttribute('data-contact-id'));
+                const selected_recipient_id = parseInt($event.target.getAttribute('data-contact-id'));
 
-                const shared = this.shared;
+                const store = this.$store;
 
-                fetch('/messages/' + current_recipient_id + '/')
+                fetch('/messages/' + selected_recipient_id + '/')
                     .then(response => response.json())
                     .then(data => {
-                        shared.current_recipient_id = current_recipient_id;
-                        shared.chats[shared.current_recipient_id] = data.messages;
+                        store.commit('current_recipient_id', selected_recipient_id);
+                        store.commit('recipient_messages', selected_recipient_id, data.messages);
+                        store.commit('message_feed', selected_recipient_id, store.getters.message_feed);
                     })
                     .catch(error => console.error(error));
             },
         },
         computed: {
             resultContactList() {
+                const store = this.$store;
+
+                const contacts = store.getters.contacts;
+
                 if (this.search_text) {
-                    return this.shared.contacts.filter(
+                    contacts.filter(
                         (contact) => contact.name
                             .toLowerCase()
                             .includes(this.search_text.toLowerCase())
                     );
-                } else {
-                    return this.shared.contacts;
                 }
+
+                return contacts;
+            },
+            current_recipient_id() {
+                return this.$store.getters.current_recipient_id
             }
         },
         template: `
@@ -63,13 +71,13 @@ if (document.getElementById(element_id)) {
                         v-bind:class="[
                             'contact',
                             {
-                                'contact-selected': (contact.id === shared.current_recipient_id),
+                                'contact-selected': (contact.id === current_recipient_id),
                             }
                         ]"
                         v-for="contact in resultContactList"
                         @click="select($event)"
                         :data-contact-id="contact.id"
-                        :data-current-recipient-id="shared.current_recipient_id"
+                        :data-current-recipient-id="current_recipient_id"
                     >
                         {{contact.name}}
                     </div>

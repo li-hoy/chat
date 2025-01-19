@@ -1,33 +1,26 @@
 import Vue from 'vue'
-import shared_data from '../shared_data';
+import { store, shared_data } from '../store';
 
 const element_id = 'chat';
 
 if (document.getElementById(element_id)) {
     const chat = new Vue({
         el: '#' + element_id,
+        store,
         data: {
             message: '',
-            shared: shared_data,
         },
         methods: {
-            load: async function () {
-                let response = await fetch('/contacts');
-
-                if (response.ok) {
-                    shared_data.contacts = (await response.json()).contacts;
-                } else {
-                    console.error("Ошибка HTTP: " + response.status);
-                }
-            },
             send: function ($event) {
                 this.message = '';
 
-                const shared = this.shared;
+                const store = this.$store;
 
                 const input = $event.target
                     .parentElement
                     .querySelector('input');
+
+                const recipient_id = store.getters.current_recipient_id;
 
                 fetch('/messages/add/', {
                     method: 'POST',
@@ -36,30 +29,30 @@ if (document.getElementById(element_id)) {
                         'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
                     },
                     body: JSON.stringify({
-                        recipient_id: this.shared.current_recipient_id,
+                        recipient_id: recipient_id,
                         text: input.value,
                     })
                 })
                     .then(response => response.json())
                     .then(data => {
-                        shared.chats[shared.current_recipient_id] = data.messages
-
-                        // тригерим обновление сообщений
-                        const recipient_id = shared.current_recipient_id
-                        shared.current_recipient_id = 0
-                        shared.current_recipient_id = recipient_id
+                        store.commit('recipient_messages', recipient_id, data.messages)
                     })
                     .catch(error => console.error(error));
 
             },
         },
         computed: {
-            isSendButtonDisabled: function() {
-                return (this.message === '' || this.shared.current_recipient_id < 1);
+            is_send_button_disabled: function () {
+                const store = this.$store;
+
+                return (this.message === '' || store.getters.current_recipient_id < 1);
             },
-            resultMessageFeed: function () {
-                return this.shared.chats[this.shared.current_recipient_id];
+            result_message_feed: function () {
+                return  this.$store.getters.current_recipient_messages;
             },
+            user_id: function () {
+                return this.$store.getters.user.id;
+            }
         },
         template: `
             <div id="chat">
@@ -68,10 +61,10 @@ if (document.getElementById(element_id)) {
                         v-bind:class="[
                             'message',
                             {
-                                'message-self': (message.sender_id == shared.user.id),
+                                'message-self': (message.sender_id == user_id),
                             }
                         ]"
-                        v-for="message in resultMessageFeed"
+                        v-for="message in result_message_feed"
                     >
                         {{message.text}}
                     </div>
@@ -88,7 +81,7 @@ if (document.getElementById(element_id)) {
                     </div>
                     <button
                         @click="send($event)"
-                        :disabled="isSendButtonDisabled"
+                        :disabled="is_send_button_disabled"
                     >send</button>
                 </div>
             </div>
