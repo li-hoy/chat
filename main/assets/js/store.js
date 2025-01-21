@@ -14,12 +14,18 @@ export const store = new Vuex.Store({
         contacts: [],
     },
     getters: {
-        user: state => state.user,
-        contacts: state => state.contacts,
-        current_recipient_id: state => state.current_recipient_id,
-        current_recipient_messages: (state) => state.chats[state.current_recipient_id],
-        recipient_messages: (state, recipient_id) => state.chats[recipient_id],
-        message_feed: state => state.message_feed,
+        user: (state) => {
+            return state.user;
+        },
+        contacts: (state) => {
+            return state.contacts;
+        },
+        chats: (state) => {
+            return state.chats;
+        },
+        current_recipient_id: (state) => {
+            return state.current_recipient_id;
+        },
     },
     mutations: {
         contacts(state, contacts) {
@@ -28,21 +34,11 @@ export const store = new Vuex.Store({
         current_recipient_id(state, id) {
             state.current_recipient_id = id;
         },
-        message_feed(state) {
-            state.message_feed = state.chats[state.current_recipient_id];
-        },
-        recipient_messages(state, recipient_id, messages) {
+        update_chat(state, payload) {
+            const recipient_id = payload.recipient_id;
+            const messages = payload.messages;
+
             state.chats[recipient_id] = messages;
         },
     },
 });
-
-export const shared_data = {
-    user : {
-        id: document.querySelector('#user_id')?.value,
-    },
-    current_recipient_id: null,
-    message_feed: [],
-    chats: {},
-    contacts: [],
-};

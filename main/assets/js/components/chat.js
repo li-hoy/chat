@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { store, shared_data } from '../store';
+import { store } from '../store';
 
 const element_id = 'chat';
 
@@ -14,13 +14,15 @@ if (document.getElementById(element_id)) {
             send: function ($event) {
                 this.message = '';
 
+                const recipient_id = this.recipient_id;
+                
                 const store = this.$store;
+
+                store.commit('current_recipient_id', 0);
 
                 const input = $event.target
                     .parentElement
                     .querySelector('input');
-
-                const recipient_id = store.getters.current_recipient_id;
 
                 fetch('/messages/add/', {
                     method: 'POST',
@@ -34,21 +36,27 @@ if (document.getElementById(element_id)) {
                     })
                 })
                     .then(response => response.json())
-                    .then(data => {
-                        store.commit('recipient_messages', recipient_id, data.messages)
+                    .then(response_data => {
+                        store.commit('update_chat', {
+                            recipient_id: recipient_id,
+                            messages: response_data.messages,
+                        });
+                        
+                        store.commit('current_recipient_id', recipient_id);
                     })
                     .catch(error => console.error(error));
 
             },
         },
         computed: {
-            is_send_button_disabled: function () {
-                const store = this.$store;
-
-                return (this.message === '' || store.getters.current_recipient_id < 1);
+            recipient_id: function () {
+                return this.$store.getters.current_recipient_id;
             },
-            result_message_feed: function () {
-                return  this.$store.getters.current_recipient_messages;
+            is_send_button_disabled: function () {
+                return (this.message === '' || this.recipient_id < 1);
+            },
+            message_feed: function () {
+                return this.$store.getters.chats[this.recipient_id];
             },
             user_id: function () {
                 return this.$store.getters.user.id;
@@ -64,7 +72,7 @@ if (document.getElementById(element_id)) {
                                 'message-self': (message.sender_id == user_id),
                             }
                         ]"
-                        v-for="message in result_message_feed"
+                        v-for="message in message_feed"
                     >
                         {{message.text}}
                     </div>

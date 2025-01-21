@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { store, shared_data } from '../store';
+import { store } from '../store';
 
 const element_id = 'contacts';
 
@@ -33,14 +33,16 @@ if (document.getElementById(element_id)) {
                     .then(response => response.json())
                     .then(data => {
                         store.commit('current_recipient_id', selected_recipient_id);
-                        store.commit('recipient_messages', selected_recipient_id, data.messages);
-                        store.commit('message_feed', selected_recipient_id, store.getters.message_feed);
+                        store.commit('update_chat', {
+                            recipient_id: selected_recipient_id,
+                            messages: data.messages,
+                        });
                     })
                     .catch(error => console.error(error));
             },
         },
         computed: {
-            resultContactList() {
+            result_contact_list() {
                 const store = this.$store;
 
                 const contacts = store.getters.contacts;
@@ -74,7 +76,7 @@ if (document.getElementById(element_id)) {
                                 'contact-selected': (contact.id === current_recipient_id),
                             }
                         ]"
-                        v-for="contact in resultContactList"
+                        v-for="contact in result_contact_list"
                         @click="select($event)"
                         :data-contact-id="contact.id"
                         :data-current-recipient-id="current_recipient_id"
