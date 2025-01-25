@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import { store } from '../store';
+import {mapGetters} from 'vuex';
+import {store} from '../store';
 
 const element_id = 'chat';
 
@@ -14,7 +15,7 @@ if (document.getElementById(element_id)) {
             send: function ($event) {
                 this.message = '';
 
-                const recipient_id = this.recipient_id;
+                const recipient_id = this.current_recipient_id;
                 
                 const store = this.$store;
 
@@ -49,14 +50,12 @@ if (document.getElementById(element_id)) {
             },
         },
         computed: {
-            recipient_id: function () {
-                return this.$store.getters.current_recipient_id;
-            },
+            ...mapGetters(['current_recipient_id']),
             is_send_button_disabled: function () {
-                return (this.message === '' || this.recipient_id < 1);
+                return (this.message === '' || this.current_recipient_id < 1);
             },
             message_feed: function () {
-                return this.$store.getters.chats[this.recipient_id];
+                return this.$store.getters.chats[this.current_recipient_id];
             },
             user_id: function () {
                 return this.$store.getters.user.id;

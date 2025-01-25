@@ -1,5 +1,6 @@
 import Vue from 'vue';
-import { store } from '../store';
+import {mapGetters} from 'vuex';
+import {store} from '../store';
 
 const element_id = 'contacts';
 
@@ -57,9 +58,7 @@ if (document.getElementById(element_id)) {
                 
                 return contacts;
             },
-            current_recipient_id() {
-                return this.$store.getters.current_recipient_id
-            }
+            ...mapGetters(['current_recipient_id']),
         },
         template: `
             <div id="contacts" class="panel">
