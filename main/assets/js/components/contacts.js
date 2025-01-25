@@ -44,17 +44,17 @@ if (document.getElementById(element_id)) {
         computed: {
             result_contact_list() {
                 const store = this.$store;
-
-                const contacts = store.getters.contacts;
-
+                
+                let contacts = store.getters.contacts;
+                
                 if (this.search_text) {
-                    contacts.filter(
+                    return contacts.filter(
                         (contact) => contact.name
                             .toLowerCase()
                             .includes(this.search_text.toLowerCase())
                     );
                 }
-
+                
                 return contacts;
             },
             current_recipient_id() {
