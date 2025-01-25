@@ -13,40 +13,14 @@ if (document.getElementById(element_id)) {
         },
         methods: {
             send: function ($event) {
+                const message = $event.target
+                    .parentElement
+                    .querySelector('input')
+                    .value;
+                
                 this.message = '';
 
-                const recipient_id = this.current_recipient_id;
-                
-                const store = this.$store;
-
-                store.commit('current_recipient_id', 0);
-
-                const input = $event.target
-                    .parentElement
-                    .querySelector('input');
-
-                fetch('/messages/add/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json; charset=utf-8',
-                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                    },
-                    body: JSON.stringify({
-                        recipient_id: recipient_id,
-                        text: input.value,
-                    })
-                })
-                    .then(response => response.json())
-                    .then(response_data => {
-                        store.commit('update_chat', {
-                            recipient_id: recipient_id,
-                            messages: response_data.messages,
-                        });
-                        
-                        store.commit('current_recipient_id', recipient_id);
-                    })
-                    .catch(error => console.error(error));
-
+                this.$store.dispatch('sendMessage', message);
             },
         },
         computed: {

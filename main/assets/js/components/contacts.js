@@ -12,19 +12,9 @@ if (document.getElementById(element_id)) {
             search_text: null,
         },
         created: function () {
-            this.load();
+            this.$store.dispatch('loadContacts');
         },
         methods: {
-            load: function () {
-                const store = this.$store;
-
-                fetch('/contacts')
-                    .then(response => {
-                        response.json()
-                            .then(result => store.commit('contacts', result.contacts));
-                    })
-                    .catch(error => console.error(error));
-            },
             select: function ($event) {
                 const selected_recipient_id = parseInt($event.target.getAttribute('data-contact-id'));
 
@@ -33,8 +23,8 @@ if (document.getElementById(element_id)) {
                 fetch('/messages/' + selected_recipient_id + '/')
                     .then(response => response.json())
                     .then(data => {
-                        store.commit('current_recipient_id', selected_recipient_id);
-                        store.commit('update_chat', {
+                        store.commit('setCurrentecipientId', selected_recipient_id);
+                        store.commit('updateChat', {
                             recipient_id: selected_recipient_id,
                             messages: data.messages,
                         });
