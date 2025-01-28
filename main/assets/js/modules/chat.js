@@ -12,7 +12,7 @@ export default {
         },
     },
     mutations: {
-        setCurrentecipientId(state, id) {
+        setCurrentRecipientId(state, id) {
             state.current_recipient_id = id;
         },
         updateChat(state, payload) {
@@ -26,7 +26,7 @@ export default {
         sendMessage(context, message) {
             const recipient_id = context.getters.current_recipient_id;
 
-            context.commit('setCurrentecipientId', 0);
+            context.commit('setCurrentRecipientId', 0);
 
             fetch('/messages/add/', {
                 method: 'POST',
@@ -46,7 +46,7 @@ export default {
                         messages: response_data.messages,
                     });
                     
-                    context.commit('setCurrentecipientId', recipient_id);
+                    context.commit('setCurrentRecipientId', recipient_id);
                 })
                 .catch(error => console.error(error));
         },

@@ -23,7 +23,7 @@ if (document.getElementById(element_id)) {
                 fetch('/messages/' + selected_recipient_id + '/')
                     .then(response => response.json())
                     .then(data => {
-                        store.commit('setCurrentecipientId', selected_recipient_id);
+                        store.commit('setCurrentRecipientId', selected_recipient_id);
                         store.commit('updateChat', {
                             recipient_id: selected_recipient_id,
                             messages: data.messages,
