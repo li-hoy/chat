@@ -59,13 +59,14 @@ if (document.getElementById(element_id)) {
                 </div>
                 <div id="contact-list">
                     <div
+                        v-for="contact in result_contact_list"
+                        v-bind:key="contact.id"
                         v-bind:class="[
                             'contact',
                             {
                                 'contact-selected': (contact.id === current_recipient_id),
                             }
                         ]"
-                        v-for="contact in result_contact_list"
                         @click="select($event)"
                         :data-contact-id="contact.id"
                         :data-current-recipient-id="current_recipient_id"
