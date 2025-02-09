@@ -1,19 +1,20 @@
 import Vue from 'vue';
 import {mapGetters} from 'vuex';
 import {store} from '../store';
+import './contact_item';
 
 Vue.component('contacts', {
     store,
-    data: {
-        search_text: null,
+    data: function () {
+        return {
+            search_text: null,
+        };
     },
     created: function () {
         this.$store.dispatch('loadContacts');
     },
     methods: {
-        select: function ($event) {
-            const selected_recipient_id = parseInt($event.target.getAttribute('data-contact-id'));
-
+        select: function (selected_recipient_id) {
             const store = this.$store;
 
             fetch('/messages/' + selected_recipient_id + '/')
@@ -54,21 +55,12 @@ Vue.component('contacts', {
                 </div>
             </div>
             <div id="contact-list">
-                <div
+                <contact-item
                     v-for="contact in result_contact_list"
-                    v-bind:key="contact.id"
-                    v-bind:class="[
-                        'contact',
-                        {
-                            'contact-selected': (contact.id === current_recipient_id),
-                        }
-                    ]"
-                    @click="select($event)"
-                    :data-contact-id="contact.id"
-                    :data-current-recipient-id="current_recipient_id"
-                >
-                    {{contact.name}}
-                </div>
+                    :key="contact.id"
+                    :contact="contact"
+                    v-on:contact-selected="select"
+                />
             </div>
         </div>
     `

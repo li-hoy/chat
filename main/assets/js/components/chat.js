@@ -4,8 +4,10 @@ import {store} from '../store';
 
 Vue.component('chat', {
     store,
-    data: {
-        message: '',
+    data: function () {
+        return {
+            message: '',
+        };
     },
     methods: {
         send: function ($event) {
