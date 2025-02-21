@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import {mapGetters} from 'vuex';
 import {store} from '../store';
+import './message';
 
 Vue.component('chat', {
     store,
@@ -36,17 +37,11 @@ Vue.component('chat', {
     template: `
         <div id="chat">
             <div id="message-feed">
-                <div
-                    v-bind:class="[
-                        'message',
-                        {
-                            'message-self': (message.sender_id == user_id),
-                        }
-                    ]"
+                <message
                     v-for="message in message_feed"
-                >
-                    {{message.text}}
-                </div>
+                    :key="message.date"
+                    :message="message"
+                />
             </div>
             <div id="message-panel" class="panel input-panel">
                 <div class="input-wrapper">

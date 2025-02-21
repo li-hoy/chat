@@ -26,4 +26,4 @@ Vue.component('contact-item', {
             {{contact.name}}
         </div>
     `
-})
+});
