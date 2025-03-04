@@ -1,14 +1,8 @@
 
 import Vue from 'vue'
-import './components/chat';
-import './components/contacts';
+import App from './App.vue';
 
-const app = new Vue({
-    el: '#app',
-    template: `
-        <div id="app">
-            <chat />
-            <contacts />
-        </div>
-    `
-});
+new Vue({
+    render: h => h(App),
+}).$mount('#app')
+  

@@ -14,8 +14,6 @@
         {% if user.is_authenticated %}
             {% csrf_token %}
             <div id="app"></div>
-            <!-- <div id="chat"></div> -->
-            <!-- <div id="contacts" class="panel"></div> -->
         {% else %}
             <div class="form-panel-wrapper">
                 {% url 'users:login' as login_form_url %}

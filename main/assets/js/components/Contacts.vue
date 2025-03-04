@@ -1,10 +1,13 @@
-import Vue from 'vue';
+<script>
 import {mapGetters} from 'vuex';
 import {store} from '../store';
-import './contact_item';
+import ContactItem from './ContactItem.vue';
 
-Vue.component('contacts', {
+export default {
     store,
+    components: {
+        ContactItem
+    },
     data: function () {
         return {
             search_text: null,
@@ -47,21 +50,27 @@ Vue.component('contacts', {
         },
         ...mapGetters(['current_recipient_id']),
     },
-    template: `
-        <div id="contacts" class="panel">
-            <div id="search-contact-panel" class="input-panel">
-                <div class="input-wrapper">
-                    <input type="text" v-model="search_text" placeholder="поиск по контактам" />
-                </div>
-            </div>
-            <div id="contact-list">
-                <contact-item
-                    v-for="contact in result_contact_list"
-                    :key="contact.id"
-                    :contact="contact"
-                    v-on:contact-selected="select"
-                />
+}
+</script>
+
+<template>
+    <div id="contacts" class="panel">
+        <div id="search-contact-panel" class="input-panel">
+            <div class="input-wrapper">
+                <input type="text" v-model="search_text" placeholder="поиск по контактам" />
             </div>
         </div>
-    `
-});
+        <div id="contact-list">
+            <ContactItem
+                v-for="contact in result_contact_list"
+                :key="contact.id"
+                :contact="contact"
+                v-on:contact-selected="select"
+            />
+        </div>
+    </div>
+</template>
+
+<style scoped>
+
+</style>

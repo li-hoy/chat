@@ -1,10 +1,13 @@
-import Vue from 'vue'
+<script>
 import {mapGetters} from 'vuex';
 import {store} from '../store';
-import './message';
+import Message from './Message.vue';
 
-Vue.component('chat', {
+export default {
     store,
+    components: {
+        Message
+    },
     data: function () {
         return {
             message: '',
@@ -34,30 +37,36 @@ Vue.component('chat', {
             return this.$store.getters.user.id;
         }
     },
-    template: `
-        <div id="chat">
-            <div id="message-feed">
-                <message
-                    v-for="message in message_feed"
-                    :key="message.date"
-                    :message="message"
+}
+</script>
+
+<template>
+    <div id="chat">
+        <div id="message-feed">
+            <Message
+                v-for="message in message_feed"
+                :key="message.date"
+                :message="message"
+            />
+        </div>
+        <div id="message-panel" class="panel input-panel">
+            <div class="input-wrapper">
+                <input
+                    type="text"
+                    v-model="message"
+                    @keyup.enter="send($event)"
+                    value=""
+                    placeholder="введите сообщение"
                 />
             </div>
-            <div id="message-panel" class="panel input-panel">
-                <div class="input-wrapper">
-                    <input
-                        type="text"
-                        v-model="message"
-                        @keyup.enter="send($event)"
-                        value=""
-                        placeholder="введите сообщение"
-                    />
-                </div>
-                <button
-                    @click="send($event)"
-                    :disabled="is_send_button_disabled"
-                >send</button>
-            </div>
+            <button
+                @click="send($event)"
+                :disabled="is_send_button_disabled"
+            >send</button>
         </div>
-    `
-});
+    </div>
+</template>
+
+<style scoped>
+
+</style>
