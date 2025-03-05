@@ -7,9 +7,33 @@ module.exports = {
     module: {
         rules: [
             // { test: /\.svg$/, use: 'svg-inline-loader' },
+            {
+                test: /\.js$/,
+                use: 'babel-loader'
+            },
+            {
+                test: /\.vue$/,
+                loader: 'vue-loader',
+            },
             { test: /\.css$/, use: ['vue-style-loader', 'css-loader'] },
-            { test: /\.js$/, use: 'babel-loader' },
-            { test: /\.vue$/, use: 'vue-loader' }
+            {
+                test: /\.s[ac]ss$/,
+                use: [
+                    {
+                        loader: 'vue-style-loader',
+                    },
+                    {
+                        loader: 'css-loader',
+                    },
+                    {
+                        loader: 'sass-loader',
+                    }
+                ]
+            },
+            {
+                test: /\.svg$/,
+                use: "file-loader",
+            },
         ]
     },
     optimization: {
