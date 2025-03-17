@@ -1,7 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django import forms
-from django.http import Http404, HttpResponseBadRequest, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render
 from users.forms.login_form import LoginUserForm
@@ -52,6 +51,7 @@ def login_user(request):
     return render(request, 'login.html', {'form': form})
 
 
+@login_required
 def logout_user(request):
     logout(request)
 

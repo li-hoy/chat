@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Message
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.utils import timezone
 import json
 from django.db.models import Q
@@ -90,4 +90,18 @@ def add(request):
             'date': m.date,
             'text': m.text,
         }, messages)),
+    })
+
+@login_required
+def common(request):
+    user = User.objects.get(id=request.user.id)
+
+    if user is None:
+        return Http404()
+
+    return JsonResponse({
+       'user': {
+            'id': user.id,
+            'name': user.username,
+        }
     })

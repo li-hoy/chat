@@ -22,6 +22,9 @@ from main import views
 urlpatterns = [
     path('', views.home, name='home'),
     # path('admin/', admin.site.urls),
+
+    path('common/', views.common, name='common'),
+
     path('contacts/', views.contacts),
     path('messages/<int:recipient_id>/', views.messages),
     path('messages/add/', views.add),

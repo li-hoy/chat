@@ -76,7 +76,7 @@ main
 
 #app
     display: flex
-    flex-direction: row
+    flex-direction: column
     flex-grow: 1
 
 .page
@@ -166,7 +166,7 @@ button:disabled, button[disabled]
     margin: $padding
     * + *
         margin-left: $padding
-    #main_user_name
+    #user_name
         color: $color_super_dark
         font-weight: bold
 
@@ -254,6 +254,9 @@ form.one-form
 .form-error
     color: $color_error
 
+#logo-link
+    text-decoration: none
+
 #logo
     display: flex
     color: $color_super_dark
@@ -261,9 +264,12 @@ form.one-form
     font-weight: bolder
     padding: 1em 2em
     margin: 0 1em
-    border: 0
-    border-radius: 1.5em
+    border: $border_width solid $color_super_light
+    border-radius: calc(1.5em + $border_radius)
     background-color: $color_super_light
+
+#logo-link:hover #logo
+    border-color: $color_super_dark
 
 #message-panel
     background-color: $color_light
