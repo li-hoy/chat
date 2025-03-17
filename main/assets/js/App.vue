@@ -1,20 +1,10 @@
 <script>
-import Contacts from './components/Contacts.vue';
-import Chat from './components/Chat.vue';
-
-export default {
-    el: '#app',
-    components: {
-        Chat,
-        Contacts
-    }
-}
+export default {}
 </script>
 
 <template>
     <div id="app">
-        <Chat />
-        <Contacts />
+        <router-view/>
     </div>
 </template>
 

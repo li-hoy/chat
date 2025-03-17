@@ -73,59 +73,67 @@ main
     display: flex
     flex-direction: column
     flex-grow: 1
-    #app
+
+#app
+    display: flex
+    flex-direction: row
+    flex-grow: 1
+
+.page
+    display: flex,
+    flex-grow: 1
+    background-color: $color_lighter
+
+#chat
+    display: flex
+    flex-direction: column
+    flex-grow: 6
+    #message-feed
         display: flex
-        flex-direction: row
+        flex-direction: column
+        justify-content: flex-end
         flex-grow: 1
-        #chat
-            display: flex
-            flex-direction: column
-            flex-grow: 6
-            #message-feed
-                display: flex
-                flex-direction: column
-                justify-content: flex-end
-                flex-grow: 1
-                padding: $padding
-                background-color: $color_lighter
-                .message
-                    background-color: $color_light_middle
-                    border: $border_width solid $color_light
-                    border-radius: $border_radius
-                    padding: $padding
-                    min-width: 5rem
-                    width: fit-content
-                * + .message
-                    margin-top: $padding
-                .message-self
-                    background-color: $color_light
-                    border-color: $color_dark
-                    align-self: flex-end
-            #message-panel
-                display: flex
-                justify-content: space-between
-                height: $input_panel_height
-                input
-                    text-align: right
-        #contacts
-            flex-grow: 1
-            background-color: lightgray
-            .contact
-                display: flex
-                background-color: $color_dark
-                border-radius: $border_radius
-                padding: $padding
-                min-width: 5rem
-                width: auto
-                font-weight: bold
-                color: $color_lighter
-                padding-left: $padding * 2
-                cursor: pointer
-            .contact-selected
-                color: $color_super_light
-                background-color: $color_darker
-            .contact + .contact
-                margin-top: $padding
+        padding: $padding
+        background-color: $color_lighter
+        .message
+            background-color: $color_light_middle
+            border: $border_width solid $color_light
+            border-radius: $border_radius
+            padding: $padding
+            min-width: 5rem
+            width: fit-content
+        * + .message
+            margin-top: $padding
+        .message-self
+            background-color: $color_light
+            border-color: $color_dark
+            align-self: flex-end
+    #message-panel
+        display: flex
+        justify-content: space-between
+        height: $input_panel_height
+        input
+            text-align: right
+
+#contacts
+    flex-grow: 1
+    background-color: lightgray
+    .contact
+        display: flex
+        background-color: $color_dark
+        border-radius: $border_radius
+        padding: $padding
+        min-width: 5rem
+        width: auto
+        font-weight: bold
+        color: $color_lighter
+        padding-left: $padding * 2
+        cursor: pointer
+    .contact-selected
+        color: $color_super_light
+        background-color: $color_darker
+    .contact + .contact
+        margin-top: $padding
 
 footer
     height: $footer_height
@@ -158,7 +166,7 @@ button:disabled, button[disabled]
     margin: $padding
     * + *
         margin-left: $padding
-    [name="user_name"]
+    #main_user_name
         color: $color_super_dark
         font-weight: bold
 
