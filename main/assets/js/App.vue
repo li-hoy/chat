@@ -9,6 +9,12 @@ export default {
     },
     computed: {
         ...mapGetters(['user']),
+        user_id: function () {
+            return this.user ? this.user.id : 0;
+        },
+        user_name: function () {
+            return this.user ? this.user.name : '';
+        },
         csrf: function() {
             return document.querySelector('[name=csrfmiddlewaretoken]').value;
         },
@@ -28,15 +34,15 @@ export default {
                     :to="{
                         name: 'user_page',
                         params: {
-                            user_id: user.id,
+                            user_id: user_id,
                         }
                     }"
                 >
-                    {{ user.name }}
+                    {{ user_name }}
                 </router-link >
                 <form name="user" action="/users/logout/" method="post" class="login-form">
                     <input type="hidden" name="csrfmiddlewaretoken" :value="csrf"/>
-                    <input type="hidden" id="user_id" name="user_id" :value="user.id"/>
+                    <input type="hidden" id="user_id" name="user_id" :value="user_id"/>
                     <button type="submit">Выйти</button>
                 </form>
             </div>

@@ -1,7 +1,18 @@
+<script>
+import Form from './Form.vue';
+
+export default ({
+    components: {
+        Form,
+    },
+})
+</script>
+
+
 <template>
     <div class="page">
-        <div id="user_settings">
-            страница пользователя {{ $route.params.user_id }}
+        <div class="form-panel-wrapper">
+           <Form/>
         </div>
     </div>
 </template>
