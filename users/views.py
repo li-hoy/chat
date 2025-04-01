@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import Http404, HttpResponseRedirect
+from django.contrib.auth.models import User
+from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render
 from users.forms.login_form import LoginUserForm
@@ -63,20 +64,22 @@ def profile_form_handler(request):
     if request.method not in ('GET', 'POST'):
         return Http404()
 
+    user = User.objects.get(id=request.user.id)
+
+    if not user or not user.is_active:
+        return HttpResponseForbidden()
+
     if request.method == 'GET':
         form = ProfileForm()
+        form.fields["username"].initial = user.username
     
     if request.method == 'POST':
         form = ProfileForm(request.POST)
         
         if form.is_valid():
             user_data = form.cleaned_data
-            user = authenticate(request, username=user_data['username'], password=user_data['password'])
-
-            if user and user.is_active:
-                user.email = user_data['email']
-
-                user.save()
+            user.email = user_data['email']
+            user.save()
 
     return render(request, 'profile.html', {'form': form})
 

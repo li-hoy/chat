@@ -92,6 +92,7 @@ def add(request):
         }, messages)),
     })
 
+
 @login_required
 def common(request):
     user = User.objects.get(id=request.user.id)

@@ -11,10 +11,10 @@ export default ({
         }
     },
     created: function () {
-        this.render();
+        this.load();
     },
     methods: {
-        render: function () {
+        load: function () {
             fetch('/users/profile')
                 .then((response) => {
                     return response.text()
