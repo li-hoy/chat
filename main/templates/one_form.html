@@ -16,8 +16,10 @@
                 {% endif %}
             {% endfor %}
             </table>
+            {% if submit_button_text %}
             <div class="one-form-buttons">
                 <button type="submit">{{ submit_button_text }}</button>
             </div>
+            {% endif %}
         </form>
     </div>

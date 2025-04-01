@@ -1,4 +1,4 @@
 <div class="form-panel-wrapper">
     {% url 'users:profile' as profile_form_url %}
-    {% include "one_form.html" with form=form action=profile_form_url submit_button_text="Сохранить" csrf_token=csrf_token only %}
+    {% include "one_form.html" with form=form action=profile_form_url csrf_token=csrf_token only %}
 </div>
