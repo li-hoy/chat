@@ -25,7 +25,7 @@ export default {
             }
         ]"
     >
-        {{message.text}}
+        {{ message.text }} 
     </div>
 </template>
 

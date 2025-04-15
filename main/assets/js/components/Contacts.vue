@@ -17,15 +17,15 @@ export default {
         this.$store.dispatch('loadContacts');
     },
     methods: {
-        select: function (selected_recipient_id) {
+        select: function (recipient) {
             const store = this.$store;
 
-            fetch('/messages/' + selected_recipient_id + '/')
+            fetch('/messages/' + recipient.id + '/')
                 .then(response => response.json())
                 .then(data => {
-                    store.commit('setCurrentRecipientId', selected_recipient_id);
+                    store.commit('setCurrentRecipientId', recipient.id);
                     store.commit('updateChat', {
-                        recipient_id: selected_recipient_id,
+                        recipient_id: recipient.id,
                         messages: data.messages,
                     });
                 })

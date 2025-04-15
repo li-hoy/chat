@@ -23,7 +23,7 @@ export default {
                 'contact-selected': (contact.id === current_recipient_id),
             }
         ]"
-        @click="$emit('contact-selected', contact.id)"
+        @click="$emit('contact-selected', contact)"
         :data-contact-id="contact.id"
     >
         {{contact.name}}
