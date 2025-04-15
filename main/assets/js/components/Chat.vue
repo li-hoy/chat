@@ -15,14 +15,15 @@ export default {
     },
     methods: {
         send: function ($event) {
-            const message = $event.target
-                .parentElement
-                .querySelector('input')
-                .value;
+            // const message = this.message
+            // const message = $event.target
+            //     .parentElement
+            //     .querySelector('input')
+            //     .value;
             
-            this.message = '';
 
-            this.$store.dispatch('sendMessage', message);
+            this.$store.dispatch('sendMessage', this.message);
+            this.message = '';
         },
     },
     computed: {

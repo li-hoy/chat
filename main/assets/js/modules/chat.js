@@ -18,10 +18,17 @@ export default {
         setCurrentRecipientId(state, id) {
             state.current_recipient_id = id;
         },
-        addMessage(state, payload) {
-            const messages = state.chats[recipient_id] ?? [];
+        updateChat(state, payload) {
+            const recipient_id = payload.recipient_id;
+            const messages = payload.messages;
 
-            messages.push(payload.message)
+            state.chats[recipient_id] = messages;
+        },
+        addMessage(state, payload) {
+            const message = payload.message
+            const messages = state.chats[message.recipient_id] ?? [];
+
+            messages.push(message)
 
             state.chats[payload.recipient_id] = messages;
         },
@@ -40,35 +47,16 @@ export default {
             context.commit('setCurrentRecipientId', 0);
 
             context.commit('addMessage', {
-                recipient_id: recipient_id,
-                sender_id: this.user.id,
-                text: text,
-                state: 'sended',
+                message: {
+                    recipient_id: recipient_id,
+                    sender_id: context.getters.user.id,
+                    text: text,
+                    date: null,
+                    state: 'sended',
+                }
             });
 
             context.commit('setCurrentRecipientId', recipient_id);
-
-            // fetch('/messages/add/', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json; charset=utf-8',
-            //         'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-            //     },
-            //     body: JSON.stringify({
-            //         recipient_id: recipient_id,
-            //         text: message,
-            //     })
-            // })
-            //     .then(response => response.json())
-            //     .then(response_data => {
-            //         context.commit('updateChat', {
-            //             recipient_id: recipient_id,
-            //             messages: response_data.messages,
-            //         });
-
-            //         context.commit('setCurrentRecipientId', recipient_id);
-            //     })
-            //     .catch(error => console.error(error));
         },
     }
 };
