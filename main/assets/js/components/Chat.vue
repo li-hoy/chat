@@ -15,13 +15,6 @@ export default {
     },
     methods: {
         send: function ($event) {
-            // const message = this.message
-            // const message = $event.target
-            //     .parentElement
-            //     .querySelector('input')
-            //     .value;
-            
-
             this.$store.dispatch('sendMessage', this.message);
             this.message = '';
         },

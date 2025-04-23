@@ -24,12 +24,14 @@ export default {
 
             state.chats[recipient_id] = messages;
         },
-        addMessage(state, message) {
-            const messages = state.chats[message.recipient_id] ?? [];
+        addMessage(state, data) {
+            const recipient_id = data.recipient_id;
+            const message = data.message;
+            const messages = state.chats[recipient_id] ?? [];
 
             messages.push(message)
 
-            state.chats[message.recipient_id] = messages;
+            state.chats[recipient_id] = messages;
         },
     },
     actions: {
@@ -47,10 +49,13 @@ export default {
 
             context.commit('addMessage', {
                 recipient_id: recipient_id,
-                sender_id: context.getters.user.id,
-                text: text,
-                date: null,
-                state: 'sended',
+                message: {
+                    recipient_id: recipient_id,
+                    sender_id: context.getters.user.id,
+                    text: text,
+                    date: null,
+                    state: 'sended',
+                },
             });
 
             context.commit('setCurrentRecipientId', recipient_id);

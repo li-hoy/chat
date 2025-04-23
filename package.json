@@ -6,7 +6,9 @@
     "build-styles": "sass main\\assets\\sass\\base.sass main\\static\\css\\base.css",
     "prod": "npm run build-styles && NODE_ENV='production' webpack",
     "dev": "npm run build-styles && NODE_ENV='development' webpack",
-    "watch": "npm run build-styles -- -w && npm run dev -- -w",
+    "watch:styles": "npm run build-styles -- -w",
+    "watch:webpack": "NODE_ENV='development' webpack --watch",
+    "watch": "npm-run-all --parallel watch:styles watch:webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -27,6 +29,7 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
+    "npm-run-all": "^4.1.5",
     "vue": "^2.7.16",
     "vue-router": "^3.6.5",
     "vuex": "^3.6.2"

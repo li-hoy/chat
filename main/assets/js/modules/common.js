@@ -31,59 +31,52 @@ export default {
                     const socket = new WebSocket('ws://127.0.0.1:8000/ws/' + user_id);
 
                     socket.onopen = function(e) {
-                        // socket.send(JSON.stringify({
-                        //     text: 'Hello from JS client'
-                        // }));
+                        console.debug('socket: Соединение создано')
                     };
 
                     socket.onclose = function(event) {
-                        console.log(event);
-
                         if (event.wasClean) {
-                            console.debug('Соединение закрыто чисто');
+                            console.debug('socket: Соединение закрыто чисто');
                         } else {
                             // например, "убит" процесс сервера
-                            console.error('Обрыв соединения. Код: ' + event.code + ' причина: ' + event.reason);
+                            console.error('socket: Обрыв соединения. Код: ' + event.code + ' причина: ' + event.reason);
                         }
                     };
         
                     socket.onmessage = function(event) {
-                        console.log(event);
+                        const message = JSON.parse(event.data);
 
-                        const data = event.data;
-
-                        if (data.error) {
+                        if (message.error) {
                             console.error(error);
-
+                            
                             return;
                         }
 
                         const current_recipient_id = context.getters.current_recipient_id;
 
-                        if (user_id === data.sender_id) {
-                            const messages = context.getters.chats[data.recipient_id] ?? [];
+                        if (user_id === message.sender_id) {
+                            const messages = context.getters.chats[message.recipient_id] ?? [];
 
                             for (const message of messages) {
-                                if (message.sender_id == data.sender_id && message.sended_at == data.sended_at) {
+                                if (message.sender_id == message.sender_id && message.sended_at == message.sended_at) {
                                     message.status = 'delivered';
-                                    message.date = data.date;
+                                    message.date = message.date;
 
                                     break;
                                 }
                             }
                         } else {
+                            message.status = 'delivered';
+
                             context.commit('addMessage', {
-                                recipient_id: user_id,
-                                sender_id: data.sender_id,
-                                text: data.text,
-                                date: data.date,
-                                status: 'delivered',
+                                recipient_id: message.sender_id,
+                                message: message,
                             });
                         }
 
-                        if (current_recipient_id == data.recipient_id || current_recipient_id == data.sender_id) {
+                        if (current_recipient_id == message.recipient_id || current_recipient_id == message.sender_id) {
                             context.commit('setCurrentRecipientId', 0);
-                            context.commit('setCurrentRecipientId', recipient_id);
+                            context.commit('setCurrentRecipientId', current_recipient_id);
                         }
                     };
 
